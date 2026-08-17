@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =======================
+// ENUMS
+// =======================
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum ProductCategory {
+  MEN
+  WOMEN
+  CHILDREN
+}
+
+enum ProductSubCategory {
+  TOPWEAR
+  UPPERWEAR
+}
+
+enum ProductSize {
+  S
+  M
+  L
+  XL
+  XXL
+}
+
+enum ProductStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum OrderStatus {
+  ORDER_PLACED
+  PACKING
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  STRIPE
+  RAZORPAY
+  COD
+}
+
+// =======================
+// USER
+// =======================
+
+model User {
+  id    String   @id @default(cuid())
+  name  String?
+  email String   @unique
+  image String?
+  role  UserRole @default(USER)
+
+  cart   Cart?
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =======================
+// PRODUCT
+// =======================
+
+model Product {
+  id String @id @default(cuid())
+
+  image       String
+  name        String
+  description String
+
+  category    ProductCategory
+  subCategory ProductSubCategory
+
+  price Decimal @db.Decimal(10, 2)
+
+  size ProductSize
+
+  isBestSeller Boolean @default(false)
+
+  status ProductStatus @default(ACTIVE)
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =======================
+// CART
+// =======================
+
+model Cart {
+  id String @id @default(cuid())
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =======================
+// CART ITEM
+// =======================
+
+model CartItem {
+  id String @id @default(cuid())
+
+  cartId    String
+  productId String
+
+  quantity Int @default(1)
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+}
+
+// =======================
+// ORDER
+// =======================
+
+model Order {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  status OrderStatus @default(ORDER_PLACED)
+
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMethod PaymentMethod @default(STRIPE)
+
+  subtotal     Decimal @db.Decimal(10, 2)
+  shippingCost Decimal @db.Decimal(10, 2)
+  total        Decimal @db.Decimal(10, 2)
+
+  stripeSessionId String? @unique
+  stripePaymentId String?
+
+  items OrderItem[]
+
+  deliveryInfo DeliveryInformation?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =======================
+// ORDER ITEM
+// =======================
+model OrderItem {
+  id String @id @default(cuid())
+
+  orderId   String
+  productId String
+
+  quantity Int
+  price    Decimal     @db.Decimal(10, 2)
+  size     ProductSize
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// =======================
+// DELIVERY INFORMATION
+// =======================
+
+model DeliveryInformation {
+  id String @id @default(cuid())
+
+  orderId String @unique
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  firstName String
+  lastName  String
+  email     String
+
+  street  String
+  city    String
+  state   String
+  zipCode String
+  country String
+
+  phone String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
