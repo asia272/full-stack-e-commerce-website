@@ -1,3 +1,4 @@
+import Subscription from "@/components/Subscription";
 import Title from "@/components/Title";
 
 const whyChooseUsCards = [
@@ -109,7 +110,7 @@ const About = () => {
 
                 </div>
             </section>
-
+            <Subscription />
         </div>
     );
 };
