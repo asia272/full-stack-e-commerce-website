@@ -124,7 +124,7 @@ export default function Navbar() {
                     font-medium
                     leading-none
                     tracking-[-0.35px]
-                    text-[#303030]
+                    text-[#2A2A2A]
                     transition-colors
                     duration-200
                     hover:text-[#111111]
@@ -140,8 +140,9 @@ export default function Navbar() {
                       left-1/2
                       h-[2px]
                       -translate-x-1/2
-                      bg-[#303030]
+                      bg-[#2A2A2A]
                       transition-all
+                    rounded-[10px]
                       duration-200
                       ${active
                                                 ? "w-[59px] opacity-100"
