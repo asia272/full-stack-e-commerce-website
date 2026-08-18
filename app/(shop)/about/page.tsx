@@ -34,7 +34,7 @@ const About = () => {
                     {/* IMAGE */}
                     <div className="w-full shrink-0 overflow-hidden xl:h-[697px] xl:w-[686px]">
                         <img
-                            src="/about-image.png"
+                            src="/assets/frontend_assets/about-image.png"
                             alt="About us"
                             className="block aspect-[686/697] h-auto w-full object-cover xl:h-[697px] xl:w-[686px]"
                         />

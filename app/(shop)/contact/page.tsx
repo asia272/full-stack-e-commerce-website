@@ -18,7 +18,7 @@ const Page = () => {
                     {/* Contact Image */}
                     <div className="relative aspect-square w-full overflow-hidden">
                         <Image
-                            src="/contact-image.png"
+                            src="/assets/frontend_assets/contact-image.png"
                             alt="Contact us"
                             fill
                             priority
