@@ -1,9 +1,16 @@
-import React from 'react'
+import { requireAdmin } from "@/lib/auth-guard";
 
-const page = () => {
+
+export default async function AdminDashboard() {
+    const user = await requireAdmin();
+
     return (
-        <div>page</div>
-    )
-}
+        <div>
+            <h1>Admin Dashboard</h1>
 
-export default page
+            <p>
+                Welcome, {user.name}
+            </p>
+        </div>
+    );
+}
