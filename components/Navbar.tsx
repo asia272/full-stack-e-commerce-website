@@ -77,27 +77,15 @@ export default function Navbar() {
                         aria-label="Forever Home"
                         className="flex h-[47px] w-[166px] shrink-0 items-center"
                     >
-                        <span
-                            className="
-                select-none
-                text-[37px]
-                font-light
-                leading-none
-                tracking-[-2.8px]
-                text-[#272727]
-              "
-                            style={{
-                                fontFamily:
-                                    "Arial Narrow, Helvetica Neue, Arial, sans-serif",
-                            }}
-                        >
-                            FOREVER
-                            <span className="ml-[2px] inline-block text-[39px] leading-none text-[#c38ba7]">
-                                .
-                            </span>
-                        </span>
+                        <Image
+                            src="/assets/frontend_assets/logo.png"
+                            alt="Forever"
+                            width={166}
+                            height={47}
+                            priority
+                            className="h-[47px] w-[166px] object-contain"
+                        />
                     </Link>
-
                     {/* -------------------------------------------------
               DESKTOP NAVIGATION
           -------------------------------------------------- */}
