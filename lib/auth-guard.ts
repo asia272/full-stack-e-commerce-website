@@ -10,7 +10,7 @@ export async function requireAdmin() {
 
     // Not logged in → home
     if (!session?.user) {
-        redirect("/");
+        redirect("/login");
     }
 
     const user = await prisma.user.findUnique({

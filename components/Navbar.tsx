@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 const navItems = [
     {
@@ -33,6 +34,9 @@ const navItems = [
 
 export default function Navbar() {
     const pathname = usePathname();
+
+    const { data: session, isPending } = authClient.useSession();
+    const isLoggedIn = !!session?.user;
 
     const [profileOpen, setProfileOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -185,13 +189,24 @@ export default function Navbar() {
                         </button>
 
                         {/* Profile */}
-                        <div className="relative">
-                            <button
-                                type="button"
-                                aria-label="My Profile"
-                                aria-expanded={profileOpen}
-                                onClick={() => setProfileOpen((prev) => !prev)}
-                                className="
+
+
+                        {!isPending && !isLoggedIn && (
+                            <Link href="/login">
+                                Login
+                            </Link>
+                        )}
+
+                        {!isPending && isLoggedIn && (
+                            <>
+
+                                <div className="relative">
+                                    <button
+                                        type="button"
+                                        aria-label="My Profile"
+                                        aria-expanded={profileOpen}
+                                        onClick={() => setProfileOpen((prev) => !prev)}
+                                        className="
                   flex
                   h-[36px]
                   w-[36px]
@@ -202,20 +217,20 @@ export default function Navbar() {
                   duration-200
                   hover:scale-105
                 "
-                            >
-                                <Image
-                                    src="/assets/frontend_assets/profile_icon.png"
-                                    alt="Profile"
-                                    width={29}
-                                    height={25}
-                                    className="h-[25px] w-[29px] object-contain"
-                                />
-                            </button>
+                                    >
+                                        <Image
+                                            src="/assets/frontend_assets/profile_icon.png"
+                                            alt="Profile"
+                                            width={29}
+                                            height={25}
+                                            className="h-[25px] w-[29px] object-contain"
+                                        />
+                                    </button>
 
-                            {/* Profile Dropdown */}
-                            {profileOpen && (
-                                <div
-                                    className="
+                                    {/* Profile Dropdown */}
+                                    {profileOpen && (
+                                        <div
+                                            className="
                     absolute
                     right-0
                     top-[54px]
@@ -230,11 +245,11 @@ export default function Navbar() {
                     py-[16px]
                     shadow-[0_1px_6px_rgba(0,0,0,0.04)]
                   "
-                                >
-                                    <div className="flex h-full flex-col justify-between">
-                                        <Link
-                                            href="/profile"
-                                            className="
+                                        >
+                                            <div className="flex h-full flex-col justify-between">
+                                                <Link
+                                                    href="/profile"
+                                                    className="
                         text-[17px]
                         font-normal
                         leading-[22px]
@@ -243,13 +258,13 @@ export default function Navbar() {
                         transition-colors
                         hover:text-[#222222]
                       "
-                                        >
-                                            My Profile
-                                        </Link>
+                                                >
+                                                    My Profile
+                                                </Link>
 
-                                        <Link
-                                            href="/orders"
-                                            className="
+                                                <Link
+                                                    href="/orders"
+                                                    className="
                         text-[17px]
                         font-normal
                         leading-[22px]
@@ -258,13 +273,17 @@ export default function Navbar() {
                         transition-colors
                         hover:text-[#222222]
                       "
-                                        >
-                                            Orders
-                                        </Link>
+                                                >
+                                                    Orders
+                                                </Link>
 
-                                        <button
-                                            type="button"
-                                            className="
+                                                <button
+                                                    onClick={async () => {
+                                                        await authClient.signOut();
+                                                        setProfileOpen(false);
+                                                    }}
+                                                    type="button"
+                                                    className="
                         w-fit
                         text-left
                         text-[17px]
@@ -275,19 +294,22 @@ export default function Navbar() {
                         transition-colors
                         hover:text-[#222222]
                       "
-                                        >
-                                            Logout
-                                        </button>
-                                    </div>
+                                                >
+                                                    Logout
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
 
-                        {/* Cart */}
-                        <Link
-                            href="/cart"
-                            aria-label="Shopping Bag"
-                            className="
+
+
+                                {/* Cart */}
+
+                                <Link
+                                    href="/cart"
+                                    aria-label="Shopping Bag"
+                                    className="
                 relative
                 flex
                 h-[39px]
@@ -299,17 +321,17 @@ export default function Navbar() {
                 duration-200
                 hover:scale-105
               "
-                        >
-                            <Image
-                                src="/assets/frontend_assets/cart_icon.png"
-                                alt="Shopping Bag"
-                                width={22}
-                                height={24}
-                                className="h-[24px] w-[px] object-contain"
-                            />
-                            {/* Cart count */}
-                            <span
-                                className="
+                                >
+                                    <Image
+                                        src="/assets/frontend_assets/cart_icon.png"
+                                        alt="Shopping Bag"
+                                        width={22}
+                                        height={24}
+                                        className="h-[24px] w-[px] object-contain"
+                                    />
+                                    {/* Cart count */}
+                                    <span
+                                        className="
                   absolute
                   right-[-1px]
                   top-[18px]
@@ -325,10 +347,14 @@ export default function Navbar() {
                   leading-none
                   text-white
                 "
-                            >
-                                2
-                            </span>
-                        </Link>
+                                    >
+                                        2
+                                    </span>
+                                </Link>
+                            </>
+                        )}
+
+
                     </div>
 
                     {/* -------------------------------------------------
@@ -404,10 +430,17 @@ export default function Navbar() {
                                 </Link>
                             );
                         })}
+                        {!isPending && !isLoggedIn && (
+                            <Link href="/login">
+                                Login
+                            </Link>
+                        )}
 
-                        <Link
-                            href="/orders"
-                            className="
+                        {!isPending && isLoggedIn && (
+                            <>
+                                <Link
+                                    href="/orders"
+                                    className="
                 border-b
                 border-[#eeeeee]
                 py-5
@@ -415,13 +448,15 @@ export default function Navbar() {
                 font-medium
                 text-[#555555]
               "
-                        >
-                            ORDERS
-                        </Link>
+                                >
+                                    ORDERS
+                                </Link>
 
-                        <Link
-                            href="/cart"
-                            className="
+
+
+                                <Link
+                                    href="/cart"
+                                    className="
                 flex
                 items-center
                 justify-between
@@ -430,11 +465,11 @@ export default function Navbar() {
                 font-medium
                 text-[#555555]
               "
-                        >
-                            <span>CART</span>
+                                >
+                                    <span>CART</span>
 
-                            <span
-                                className="
+                                    <span
+                                        className="
                   flex
                   h-[22px]
                   min-w-[22px]
@@ -446,10 +481,15 @@ export default function Navbar() {
                   text-[11px]
                   text-white
                 "
-                            >
-                                2
-                            </span>
-                        </Link>
+                                    >
+                                        2
+                                    </span>
+                                </Link>
+                            </>
+                        )}
+
+
+
                     </nav>
                 </div>
             )}
