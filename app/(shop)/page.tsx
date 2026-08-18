@@ -1,8 +1,13 @@
+import Hero from '@/components/Hero'
+import Subscription from '@/components/Subscription'
 import React from 'react'
 
 const page = () => {
     return (
-        <div>Home page will be display here.</div>
+        <>
+            <Hero />
+            <Subscription />
+        </>
     )
 }
 
