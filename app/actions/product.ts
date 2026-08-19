@@ -168,3 +168,52 @@ export async function createProduct(input: CreateProductInput) {
 
     }
 }
+
+// ====================================================
+// GET ALL PRODUCTS
+// ====================================================
+
+export async function getAllProducts() {
+    try {
+        // ============================================
+        // 1. ADMIN CHECK
+        // ============================================
+
+        await requireAdmin();
+
+        // ============================================
+        // 2. GET PRODUCTS
+        // ============================================
+
+        const products = await prisma.product.findMany({
+            select: {
+                id: true,
+                name: true,
+                category: true,
+                price: true,
+                image: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        // ============================================
+        // 3. RETURN SERIALIZABLE DATA
+        // ============================================
+
+        return products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            category: product.category,
+            price: Number(product.price),
+            image: product.image,
+        }));
+    } catch (error) {
+        console.error("========== GET ALL PRODUCTS ERROR ==========");
+        console.error(error);
+        console.error("=============================================");
+
+        throw error;
+    }
+}
