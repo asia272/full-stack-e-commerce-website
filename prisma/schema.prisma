@@ -142,7 +142,7 @@ model Verification {
 model Product {
   id String @id @default(cuid())
 
-  image       String
+  image       String[]
   name        String
   description String
 
