@@ -190,10 +190,27 @@ export default function Navbar() {
 
                         {/* Profile */}
 
-
                         {!isPending && !isLoggedIn && (
-                            <Link href="/login">
-                                Login
+                            <Link
+                                href="/login"
+                                className="
+            flex
+            h-[36px]
+            items-center
+            justify-center
+            rounded-[10px]
+            px-1
+            text-[18px]
+            font-medium
+            leading-none
+            tracking-[-0.35px]
+            text-[#2A2A2A]
+            transition-colors
+            duration-200
+            hover:text-[#111111]
+        "
+                            >
+                                LOGIN
                             </Link>
                         )}
 
@@ -431,8 +448,22 @@ export default function Navbar() {
                             );
                         })}
                         {!isPending && !isLoggedIn && (
-                            <Link href="/login">
-                                Login
+                            <Link
+                                href="/login"
+                                className="
+            border-b
+            border-[#eeeeee]
+            py-5
+            text-[17px]
+            font-medium
+            tracking-[-0.2px]
+            text-[#555555]
+            transition-colors
+            duration-200
+            hover:text-[#222222]
+        "
+                            >
+                                LOGIN
                             </Link>
                         )}
 
