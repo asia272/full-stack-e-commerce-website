@@ -1,10 +1,14 @@
-import AuthForm from "@/components/Signup";
+import AuthForm from "@/components/AuthForm";
+import Subscription from "@/components/Subscription";
 
 
 export default function AuthPage() {
     return (
-        <main className="flex min-h-screen items-center justify-center px-4">
+        <> <div className="flex min-h-screen items-center justify-center px-4">
             <AuthForm />
-        </main>
+        </div>
+            <Subscription />
+        </>
+
     );
 }
