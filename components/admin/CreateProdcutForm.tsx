@@ -129,9 +129,9 @@ export default function CreateProductForm() {
                 (image): image is File => image !== null
             );
 
-            if (selectedImages.length === 0) {
-                throw new Error("Please upload at least one image");
-            }
+            // if (selectedImages.length === 0) {
+            //     throw new Error("Please upload at least one image");
+            // }
 
             // ============================================
             // 2. UPLOAD IMAGES TO CLOUDINARY

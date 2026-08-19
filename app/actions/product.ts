@@ -63,7 +63,7 @@ export async function createProduct(input: CreateProductInput) {
         }
 
         if (input.image.length === 0) {
-            throw new Error("Please upload at least one image");
+            throw new Error("Please upload at least one image ");
         }
 
         if (input.image.length > 4) {
