@@ -315,7 +315,7 @@ export default function AuthForm() {
                                 h-[61px]
                                 w-full
                                 border
-                                border-[#222222]
+                                border-[#000000]
                                 bg-white
                                 px-[20px]
                                 font-[Outfit]
@@ -342,7 +342,7 @@ export default function AuthForm() {
                         className={`
                             w-full
                             border
-                            border-[#222222]
+                            border-[#000000]
                             bg-white
                             px-[25px]
                             font-[Outfit]
@@ -374,7 +374,7 @@ export default function AuthForm() {
                         className={`
                             w-full
                             border
-                            border-[#222222]
+                            border-[#000000]
                             bg-white
                             px-[25px]
                             font-[Outfit]
