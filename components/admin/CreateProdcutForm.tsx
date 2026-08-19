@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { uploadToCloudinary } from "@/lib/cloudinary";
+import { createProduct } from "@/app/actions/product";
+import { toast } from "sonner";
 
 const categories = [
     "MEN",
@@ -118,40 +121,77 @@ export default function CreateProductForm() {
         setIsSubmitting(true);
 
         try {
-            const formData = new FormData();
+            // ============================================
+            // 1. GET SELECTED IMAGES
+            // ============================================
 
-            formData.append("name", form.name);
-            formData.append(
-                "description",
-                form.description
-            );
-            formData.append(
-                "category",
-                form.category
-            );
-            formData.append(
-                "subCategory",
-                form.subCategory
-            );
-            formData.append("price", form.price);
-            formData.append(
-                "isBestSeller",
-                String(form.isBestSeller)
+            const selectedImages = images.filter(
+                (image): image is File => image !== null
             );
 
-            form.sizes.forEach((size) => {
-                formData.append("sizes", size);
+            if (selectedImages.length === 0) {
+                throw new Error("Please upload at least one image");
+            }
+
+            // ============================================
+            // 2. UPLOAD IMAGES TO CLOUDINARY
+            // ============================================
+
+            const imageUrls = await Promise.all(
+                selectedImages.map((image) =>
+                    uploadToCloudinary(image)
+                )
+            );
+
+            console.log("Cloudinary image URLs:", imageUrls);
+
+            // ============================================
+            // 3. CREATE PRODUCT IN DATABASE
+            // ============================================
+
+            await createProduct({
+                name: form.name,
+                description: form.description,
+                category: form.category as "MEN" | "WOMEN" | "CHILDREN",
+                subCategory: form.subCategory as "TOPWEAR" | "UPPERWEAR",
+                price: form.price,
+                sizes: form.sizes as ("S" | "M" | "L" | "XL" | "XXL")[],
+                isBestSeller: form.isBestSeller,
+                image: imageUrls,
             });
 
-            images.forEach((image) => {
-                if (image) {
-                    formData.append("images", image);
+
+            // ============================================
+            // 4. SUCCESS
+            // ============================================
+
+            toast.success("Product added successfully!");
+
+            // ============================================
+            // 5. RESET FORM
+            // ============================================
+
+            setForm(initialForm);
+
+            setImages([null, null, null, null]);
+
+            previews.forEach((preview) => {
+                if (preview) {
+                    URL.revokeObjectURL(preview);
                 }
             });
 
-            // Temporary implementation.
-            // Replace this with your server action later.
-            console.log(formData);
+            setPreviews([null, null, null, null]);
+
+
+        } catch (error) {
+            console.error("Create product error:", error);
+
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to create product"
+            );
         } finally {
             setIsSubmitting(false);
         }

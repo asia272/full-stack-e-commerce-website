@@ -2,9 +2,8 @@
 
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Metadata } from "next";
+import { Toaster } from "sonner";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${outfit.variable} font-sans`}>
 
-
+        <Toaster position="top-right" richColors />
         {children}
 
       </body>
