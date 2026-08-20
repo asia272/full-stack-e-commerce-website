@@ -19,7 +19,6 @@ export default function Product({
             href={`/product/${id}`}
             className="group block"
         >
-            {/* Product Image */}
             <div
                 className="
                     relative
@@ -48,7 +47,6 @@ export default function Product({
                 />
             </div>
 
-            {/* Product Information */}
             <div className="pt-[17px]">
                 <h3
                     className="

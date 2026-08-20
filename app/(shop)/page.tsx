@@ -1,30 +1,25 @@
 import Hero from '@/components/Hero'
 import PolicyFeatures from '@/components/PolicyFeatures'
-import AllProducts from '@/components/product/AllProducts'
+
+import BestSeller from '@/components/product/BestSeller'
+import LatestProducts from '@/components/product/LatestProducts'
 import Subscription from '@/components/Subscription'
-import React from 'react'
+
 
 const page = () => {
     return (
         <>
             <Hero />
+            <div className="mx-auto max-w-[1600px] px-[24px] mt-[110px]">
+                <LatestProducts />
+
+                <div className="mt-[110px]">
+                    <BestSeller />
+                </div>
+            </div>
             <PolicyFeatures />
             <Subscription />
-            <section
-                className="
-                    mx-auto
-                    w-full
-                    max-w-[1800px]
-                    px-[24px]
-                    pb-[100px]
-                    pt-[70px]
-                    md:px-[40px]
-                    lg:px-[60px]
-                    xl:px-[72px]
-                "
-            >
-                <AllProducts />
-            </section>
+
         </>
     )
 }

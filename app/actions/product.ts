@@ -351,12 +351,10 @@ export async function getBestSellerProducts() {
             image: product.image,
         }));
     } catch (error) {
-        console.error(
-            "========== GET BEST SELLER PRODUCTS ERROR =========="
-        );
+        console.error("========== GET LATEST PRODUCTS ERROR ==========");
         console.error(error);
-        console.error("====================================================");
+        console.error("================================================");
 
-        throw new Error("Failed to fetch best seller products");
+        throw error;
     }
 }
