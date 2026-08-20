@@ -46,6 +46,7 @@ export default function SearchBar({
                 ? `/products?${query}`
                 : "/products",
         );
+
     };
 
     const handleClose = () => {
@@ -71,75 +72,73 @@ export default function SearchBar({
     };
 
     return (
-        <div className="border-b border-[#e5e5e5] bg-white">
-            <div className="container mx-auto px-[20px] sm:px-[30px] lg:px-[40px]">
+        <div className="w-full border-b border-[#eeeeee] bg-[#fcfdfe]">
+            <div className="mx-auto flex h-[132px] w-full items-center justify-center px-[20px] sm:px-[30px]">
                 <form
                     onSubmit={handleSubmit}
-                    className="flex h-[64px] items-center gap-[14px]"
+                    className="flex w-full max-w-[1050px] items-center gap-[20px]"
                 >
-                    {/* Search icon */}
-                    <Search
-                        size={20}
-                        strokeWidth={1.5}
-                        className="shrink-0 text-[#333]"
-                    />
-
-                    {/* Input */}
-                    <input
-                        type="text"
-                        value={value}
-                        onChange={(event) =>
-                            setValue(event.target.value)
-                        }
-                        placeholder="Search products..."
-                        autoFocus
+                    {/* Search field */}
+                    <div
                         className="
-                            h-full
+                            flex
+                            h-[61px]
                             flex-1
-                            bg-transparent
-                            text-[15px]
-                            text-[#333]
-                            outline-none
-                            placeholder:text-[#999]
-                        "
-                    />
-
-                    {/* Clear input */}
-                    {value && (
-                        <button
-                            type="button"
-                            onClick={() => setValue("")}
-                            aria-label="Clear search input"
-                            className="
-                                shrink-0
-                                text-[#777]
-                                transition-colors
-                                hover:text-[#333]
-                            "
-                        >
-                            <X
-                                size={18}
-                                strokeWidth={1.5}
-                            />
-                        </button>
-                    )}
-
-                    {/* Search */}
-                    <button
-                        type="submit"
-                        className="
-                            shrink-0
-                            text-[14px]
-                            font-medium
-                            uppercase
-                            tracking-[0.04em]
-                            text-[#333]
-                            transition-opacity
-                            hover:opacity-60
+                            items-center
+                            rounded-[32px]
+                            border
+                            border-[#bfc1c3]
+                            bg-[#fcfdfe]
+                            px-[31px]
+                            transition-colors
+                            focus-within:border-[#999]
                         "
                     >
-                        Search
-                    </button>
+                        {/* Input */}
+                        <input
+                            type="text"
+                            value={value}
+                            onChange={(event) =>
+                                setValue(event.target.value)
+                            }
+                            placeholder="Search"
+                            autoFocus
+                            className="
+                                min-w-0
+                                flex-1
+                                bg-transparent
+                                text-[20px]
+                                font-normal
+                                leading-none
+                                text-[#333]
+                                outline-none
+                                placeholder:text-[#b8b8b8]
+                            "
+                        />
+
+                        {/* Search icon */}
+                        <button
+                            type="submit"
+                            aria-label="Search"
+                            className="
+                                ml-[20px]
+                                flex
+                                h-[32px]
+                                w-[32px]
+                                shrink-0
+                                items-center
+                                justify-center
+                                text-[#333]
+                                transition-opacity
+                                hover:opacity-60
+                            "
+                        >
+                            <Search
+                                size={29}
+                                strokeWidth={1.6}
+                            />
+                        </button>
+                    </div>
 
                     {/* Close search bar */}
                     <button
@@ -147,14 +146,19 @@ export default function SearchBar({
                         onClick={handleClose}
                         aria-label="Close search"
                         className="
+                            flex
+                            h-[32px]
+                            w-[32px]
                             shrink-0
+                            items-center
+                            justify-center
                             text-[#333]
                             transition-opacity
                             hover:opacity-60
                         "
                     >
                         <X
-                            size={22}
+                            size={28}
                             strokeWidth={1.5}
                         />
                     </button>
