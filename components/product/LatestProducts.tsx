@@ -19,7 +19,7 @@ export default async function LatestProducts() {
                 "
             >
 
-                <Title title="LATEST" highlight="COLLECTIONS" className="mb-[13px]" />
+                <Title title="LATEST" highlight="COLLECTIONS" className="mb-[13px]" highlightWeight="semibold" />
                 {/* Description */}
                 <p
                     className="

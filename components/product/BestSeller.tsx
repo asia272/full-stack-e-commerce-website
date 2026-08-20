@@ -1,5 +1,6 @@
 import { getBestSellerProducts } from "@/app/actions/product";
 import Product from "./Product";
+import Title from "../Title";
 
 export default async function BestSeller() {
     const products = await getBestSellerProducts();
@@ -16,39 +17,9 @@ export default async function BestSeller() {
                     text-center
                 "
             >
-                <h2
-                    className="
-                        flex
-                        items-center
-                        gap-[10px]
-                        text-[30px]
-                        font-normal
-                        leading-[36px]
-                        tracking-[-0.8px]
-                        text-[#6b6b6b]
-                    "
-                >
-                    <span>BEST</span>
-
-                    <span className="font-semibold text-[#303030]">
-                        SELLER
-                    </span>
-
-                    <span
-                        className="
-                            ml-[1px]
-                            mt-[4px]
-                            block
-                            h-[1px]
-                            w-[48px]
-                            bg-[#303030]
-                        "
-                    />
-                </h2>
-
+                <Title title="BEST" highlight="SELLER" className="mb-[13px]" highlightWeight="semibold" />
                 <p
                     className="
-                        mt-[13px]
                         max-w-[850px]
                         text-[14px]
                         font-normal
