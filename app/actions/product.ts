@@ -358,3 +358,72 @@ export async function getBestSellerProducts() {
         throw error;
     }
 }
+
+// ====================================================
+// GET COLLECTION PRODUCTS
+// ====================================================
+
+type CollectionFilters = {
+    categories?: ("MEN" | "WOMEN" | "CHILDREN")[];
+    subCategories?: ("TOPWEAR" | "UPPERWEAR")[];
+    sort?: "low-high" | "high-low" | "newest";
+};
+
+export async function getCollectionProducts({
+    categories = [],
+    subCategories = [],
+    sort = "newest",
+}: CollectionFilters = {}) {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                ...(categories.length > 0 && {
+                    category: {
+                        in: categories,
+                    },
+                }),
+
+                ...(subCategories.length > 0 && {
+                    subCategory: {
+                        in: subCategories,
+                    },
+                }),
+            },
+
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                image: true,
+            },
+
+            orderBy:
+                sort === "low-high"
+                    ? {
+                        price: "asc",
+                    }
+                    : sort === "high-low"
+                        ? {
+                            price: "desc",
+                        }
+                        : {
+                            createdAt: "desc",
+                        },
+        });
+
+        return products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.image,
+        }));
+    } catch (error) {
+        console.error(
+            "========== GET COLLECTION PRODUCTS ERROR ==========",
+        );
+        console.error(error);
+        console.error("====================================================");
+
+        throw new Error("Failed to fetch collection products");
+    }
+}
