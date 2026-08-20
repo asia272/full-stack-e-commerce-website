@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 
+import SearchBar from "@/components/SearchBar";
+
 const navItems = [
     {
         label: "HOME",
@@ -40,6 +42,7 @@ export default function Navbar() {
 
     const [profileOpen, setProfileOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
 
     // Close menus whenever the route changes
     useEffect(() => {
@@ -69,7 +72,7 @@ export default function Navbar() {
     };
 
     return (
-        <header className="w-full bg-white">
+        <> <header className="w-full bg-white">
             {/* Main Navbar */}
             <div className="relative mx-auto w-full max-w-[1587px]">
                 <div className="flex h-[96px] items-center justify-between">
@@ -167,6 +170,7 @@ export default function Navbar() {
                         <button
                             type="button"
                             aria-label="Search"
+                            onClick={() => setSearchOpen((value) => !value)}
                             className="
                 flex
                 h-[36px]
@@ -525,5 +529,12 @@ export default function Navbar() {
                 </div>
             )}
         </header>
+            {searchOpen && (
+                <SearchBar
+                    onClose={() => setSearchOpen(false)}
+                />
+            )}
+        </>
+
     );
 }

@@ -363,67 +363,81 @@ export async function getBestSellerProducts() {
 // GET COLLECTION PRODUCTS
 // ====================================================
 
-type CollectionFilters = {
-    categories?: ("MEN" | "WOMEN" | "CHILDREN")[];
-    subCategories?: ("TOPWEAR" | "UPPERWEAR")[];
-    sort?: "low-high" | "high-low" | "newest";
+
+
+
+type GetCollectionProductsInput = {
+    categories: ("MEN" | "WOMEN" | "CHILDREN")[];
+    subCategories: ("TOPWEAR" | "UPPERWEAR")[];
+    sort: "low-high" | "high-low" | "newest";
+    search?: string;
 };
 
 export async function getCollectionProducts({
-    categories = [],
-    subCategories = [],
-    sort = "newest",
-}: CollectionFilters = {}) {
-    try {
-        const products = await prisma.product.findMany({
-            where: {
-                ...(categories.length > 0 && {
-                    category: {
-                        in: categories,
-                    },
-                }),
-
-                ...(subCategories.length > 0 && {
-                    subCategory: {
-                        in: subCategories,
-                    },
-                }),
+    categories,
+    subCategories,
+    sort,
+    search,
+}: GetCollectionProductsInput) {
+    const where = {
+        ...(categories.length > 0 && {
+            category: {
+                in: categories,
             },
+        }),
 
-            select: {
-                id: true,
-                name: true,
-                price: true,
-                image: true,
+        ...(subCategories.length > 0 && {
+            subCategory: {
+                in: subCategories,
             },
+        }),
 
-            orderBy:
-                sort === "low-high"
-                    ? {
-                        price: "asc",
-                    }
-                    : sort === "high-low"
-                        ? {
-                            price: "desc",
-                        }
-                        : {
-                            createdAt: "desc",
-                        },
-        });
+        ...(search?.trim() && {
+            name: {
+                contains: search.trim(),
+                mode: "insensitive" as const,
+            },
+        }),
+    };
 
-        return products.map((product) => ({
-            id: product.id,
-            name: product.name,
-            price: Number(product.price),
-            image: product.image,
-        }));
-    } catch (error) {
-        console.error(
-            "========== GET COLLECTION PRODUCTS ERROR ==========",
-        );
-        console.error(error);
-        console.error("====================================================");
+    let orderBy;
 
-        throw new Error("Failed to fetch collection products");
+    switch (sort) {
+        case "low-high":
+            orderBy = {
+                price: "asc" as const,
+            };
+            break;
+
+        case "high-low":
+            orderBy = {
+                price: "desc" as const,
+            };
+            break;
+
+        case "newest":
+        default:
+            orderBy = {
+                createdAt: "desc" as const,
+            };
+            break;
     }
+
+    const products = await prisma.product.findMany({
+        where,
+        orderBy,
+        select: {
+            id: true,
+            name: true,
+            price: true,
+            image: true,
+        },
+    });
+
+    return products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: Number(product.price),
+        image: product.image,
+    }));
 }

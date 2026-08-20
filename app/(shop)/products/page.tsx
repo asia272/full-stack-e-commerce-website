@@ -1,8 +1,8 @@
-
 import { getCollectionProducts } from "@/app/actions/product";
 import CollectionClient from "@/components/product/CollectionClient";
 
 type SearchParams = {
+    search?: string;
     category?: string;
     subCategory?: string;
     sort?: string;
@@ -18,8 +18,9 @@ export default async function CollectionPage({
     const categories = params.category
         ? params.category
             .split(",")
-            .filter((value): value is "MEN" | "WOMEN" | "CHILDREN" =>
-                ["MEN", "WOMEN", "CHILDREN"].includes(value),
+            .filter(
+                (value): value is "MEN" | "WOMEN" | "CHILDREN" =>
+                    ["MEN", "WOMEN", "CHILDREN"].includes(value),
             )
         : [];
 
@@ -39,10 +40,13 @@ export default async function CollectionPage({
             ? params.sort
             : "newest";
 
+    const search = params.search?.trim() ?? "";
+
     const products = await getCollectionProducts({
         categories,
         subCategories,
         sort,
+        search,
     });
 
     return (
@@ -51,6 +55,7 @@ export default async function CollectionPage({
             selectedCategories={categories}
             selectedSubCategories={subCategories}
             selectedSort={sort}
+            search={search}
         />
     );
 }

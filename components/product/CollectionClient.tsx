@@ -4,6 +4,7 @@ import Product from "@/components/product/Product";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import Title from "../Title";
 
 type ProductItem = {
     id: string;
@@ -23,6 +24,7 @@ type CollectionClientProps = {
     selectedCategories: Category[];
     selectedSubCategories: SubCategory[];
     selectedSort: SortOption;
+    search: string;
 };
 
 const categories: {
@@ -80,6 +82,7 @@ export default function CollectionClient({
     selectedCategories,
     selectedSubCategories,
     selectedSort,
+    search,
 }: CollectionClientProps) {
 
     const router = useRouter();
@@ -161,7 +164,17 @@ export default function CollectionClient({
     };
 
     const clearFilters = () => {
-        router.push(pathname);
+        const params = new URLSearchParams();
+
+        if (search) {
+            params.set("search", search);
+        }
+
+        const query = params.toString();
+
+        router.push(
+            query ? `${pathname}?${query}` : pathname,
+        );
     };
 
     const currentSortLabel = useMemo(() => {
@@ -332,18 +345,10 @@ export default function CollectionClient({
                 <section className="min-w-0">
                     {/* Header */}
                     <div className="mb-[34px] flex items-center justify-between gap-[25px]">
-                        <div className="flex items-center gap-[25px]">
-                            <h1 className="text-[32px] font-normal uppercase leading-[38px] tracking-[-1.2px] text-[#666]">
-                                <span className="font-normal">
-                                    All
-                                </span>{" "}
-                                <span className="font-semibold text-[#333]">
-                                    Collections
-                                </span>
-                            </h1>
 
-                            <span className="hidden h-[2px] w-[52px] bg-[#333] sm:block" />
-                        </div>
+                        <Title title="All" highlight="Collections" align="start" className="mb-[2px]" highlightWeight="semibold" />
+
+
 
                         {/* Desktop sort */}
                         <div className="relative hidden w-[310px] shrink-0 lg:block">
