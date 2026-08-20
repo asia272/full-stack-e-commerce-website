@@ -23,6 +23,7 @@ export default function AdminLayout({
                         lg:px-[88px]
                         lg:py-[40px]
                     "
+
                 >
                     {children}
                 </main>

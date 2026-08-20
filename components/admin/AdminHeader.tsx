@@ -5,12 +5,16 @@ export default function AdminHeader() {
     return (
         <header
             className="
-                h-[88px]
-                w-full
-                border-b
-                border-[#e5e7eb]
-                bg-[#f8fafc]
-            "
+        fixed
+        left-0
+        top-0
+        z-50
+        h-[88px]
+        w-full
+        border-b
+        border-[#e5e7eb]
+        bg-[#f8fafc]
+    "
         >
             <div
                 className="
