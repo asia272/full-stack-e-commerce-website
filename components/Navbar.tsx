@@ -381,7 +381,7 @@ export default function Navbar() {
                     {/* -------------------------------------------------
               MOBILE MENU BUTTON
           -------------------------------------------------- */}
-                    <button
+                    {/* <button
                         type="button"
                         aria-label={mobileOpen ? "Close menu" : "Open menu"}
                         aria-expanded={mobileOpen}
@@ -401,7 +401,89 @@ export default function Navbar() {
                         ) : (
                             <Menu size={29} strokeWidth={1.7} />
                         )}
-                    </button>
+                    </button> */}
+                    {/* MOBILE ACTIONS + MENU BUTTON */}
+                    <div className="flex items-center gap-[10px] lg:hidden">
+
+                        {/* Mobile Search */}
+                        <button
+                            type="button"
+                            aria-label="Search"
+                            onClick={() => {
+                                setMobileOpen(false);
+                                setSearchOpen(true);
+                            }}
+                            className="
+            flex
+            h-[42px]
+            w-[42px]
+            items-center
+            justify-center
+            text-[#303030]
+            transition-transform
+            duration-200
+            hover:scale-105
+        "
+                        >
+                            <Image
+                                src="/assets/frontend_assets/search_icon.png"
+                                alt="Search"
+                                width={23}
+                                height={23}
+                                className="h-[23px] w-[23px] object-contain"
+                            />
+                        </button>
+
+                        {/* Mobile Profile */}
+                        {!isPending && (
+                            <Link
+                                href={isLoggedIn ? "/profile" : "/login"}
+                                aria-label={isLoggedIn ? "My Profile" : "Login"}
+                                className="
+                flex
+                h-[42px]
+                w-[42px]
+                items-center
+                justify-center
+                text-[#303030]
+                transition-transform
+                duration-200
+                hover:scale-105
+            "
+                            >
+                                <Image
+                                    src="/assets/frontend_assets/profile_icon.png"
+                                    alt="Profile"
+                                    width={29}
+                                    height={25}
+                                    className="h-[25px] w-[29px] object-contain"
+                                />
+                            </Link>
+                        )}
+
+                        {/* Existing Mobile Menu */}
+                        <button
+                            type="button"
+                            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                            aria-expanded={mobileOpen}
+                            onClick={() => setMobileOpen((prev) => !prev)}
+                            className="
+            flex
+            h-[42px]
+            w-[42px]
+            items-center
+            justify-center
+            text-[#303030]
+        "
+                        >
+                            {mobileOpen ? (
+                                <X size={29} strokeWidth={1.7} />
+                            ) : (
+                                <Menu size={29} strokeWidth={1.7} />
+                            )}
+                        </button>
+
+                    </div>
                 </div>
 
                 {/* -------------------------------------------------
