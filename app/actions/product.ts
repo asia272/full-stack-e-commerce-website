@@ -289,3 +289,74 @@ export async function deleteProduct(productId: string) {
         };
     }
 }
+// ====================================================
+// GET LATEST PRODUCTS
+// ====================================================
+
+export async function getLatestProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                image: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            take: 10,
+        });
+
+        return products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.image,
+        }));
+    } catch (error) {
+        console.error("========== GET LATEST PRODUCTS ERROR ==========");
+        console.error(error);
+        console.error("================================================");
+
+        throw new Error("Failed to fetch latest products");
+    }
+}
+// ====================================================
+// GET BEST SELLER PRODUCTS
+// ====================================================
+
+export async function getBestSellerProducts() {
+    try {
+        const products = await prisma.product.findMany({
+            where: {
+                isBestSeller: true,
+            },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                image: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            take: 5,
+        });
+
+        return products.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.image,
+        }));
+    } catch (error) {
+        console.error(
+            "========== GET BEST SELLER PRODUCTS ERROR =========="
+        );
+        console.error(error);
+        console.error("====================================================");
+
+        throw new Error("Failed to fetch best seller products");
+    }
+}

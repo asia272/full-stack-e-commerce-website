@@ -22,7 +22,6 @@ export default function AdminLayout({
                         lg:ml-[308px]
                         lg:px-[88px]
                         lg:py-[40px]
-                    
                     "
 
                 >
