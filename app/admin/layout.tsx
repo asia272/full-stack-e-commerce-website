@@ -7,7 +7,7 @@ export default function AdminLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="min-h-screen bg-[#f8fafc]">
+        <div className="min-h-screen bg-[#f8fafc] pt-[88px]">
             <AdminHeader />
 
             <div className="relative flex min-h-[calc(100vh-88px)]">
@@ -22,7 +22,7 @@ export default function AdminLayout({
                         lg:ml-[308px]
                         lg:px-[88px]
                         lg:py-[40px]
-                        mt-15
+                    
                     "
 
                 >
