@@ -1,6 +1,7 @@
 
 import { getLatestProducts } from "@/app/actions/product";
 import Product from "./Product";
+import Title from "../Title";
 
 export default async function LatestProducts() {
     const products = await getLatestProducts();
@@ -17,41 +18,11 @@ export default async function LatestProducts() {
                     text-center
                 "
             >
-                {/* Title */}
-                <h2
-                    className="
-                        flex
-                        items-center
-                        gap-[10px]
-                        text-[30px]
-                        font-normal
-                        leading-[36px]
-                        tracking-[-0.8px]
-                        text-[#6b6b6b]
-                    "
-                >
-                    <span>LATEST</span>
 
-                    <span className="font-semibold text-[#303030]">
-                        COLLECTIONS
-                    </span>
-
-                    <span
-                        className="
-                            ml-[1px]
-                            mt-[4px]
-                            block
-                            h-[1px]
-                            w-[48px]
-                            bg-[#303030]
-                        "
-                    />
-                </h2>
-
+                <Title title="LATEST" highlight="COLLECTIONS" className="mb-[13px]" />
                 {/* Description */}
                 <p
                     className="
-                        mt-[13px]
                         max-w-[850px]
                         text-[14px]
                         font-normal

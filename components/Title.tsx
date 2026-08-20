@@ -1,18 +1,21 @@
+
 interface TitleProps {
     title: string;
     highlight: string;
     align?: "start" | "center";
+    className?: string;
 }
 
 const Title = ({
     title,
     highlight,
     align = "center",
+    className = "mb-[70px]",
 }: TitleProps) => {
     return (
         <div
-            className={`mb-[70px] flex items-center gap-4 ${align === "center" ? "justify-center" : "justify-start"
-                }`}
+            className={`flex items-center gap-4 ${align === "center" ? "justify-center" : "justify-start"
+                } ${className}`}
         >
             <h1 className="font-[Outfit] text-[30px] font-normal uppercase leading-none tracking-[0%] text-[#707070]">
                 {title}{" "}
