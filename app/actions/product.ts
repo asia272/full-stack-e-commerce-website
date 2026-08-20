@@ -217,3 +217,75 @@ export async function getAllProducts() {
         throw error;
     }
 }
+
+export async function deleteProduct(productId: string) {
+    try {
+        // ============================================
+        // 1. ADMIN CHECK
+        // ============================================
+
+        await requireAdmin();
+
+        // ============================================
+        // 2. VALIDATE PRODUCT ID
+        // ============================================
+
+        if (!productId || typeof productId !== "string") {
+            return {
+                success: false,
+                message: "Invalid product ID",
+            };
+        }
+
+        // ============================================
+        // 3. CHECK PRODUCT EXISTS
+        // ============================================
+
+        const product = await prisma.product.findUnique({
+            where: {
+                id: productId,
+            },
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+
+        if (!product) {
+            return {
+                success: false,
+                message: "Product not found",
+            };
+        }
+
+        // ============================================
+        // 4. DELETE PRODUCT
+        // ============================================
+
+        await prisma.product.delete({
+            where: {
+                id: productId,
+            },
+        });
+
+        // ============================================
+        // 5. REVALIDATE LIST PAGE
+        // ============================================
+
+        revalidatePath("/admin/list");
+
+        return {
+            success: true,
+            message: `${product.name} deleted successfully`,
+        };
+    } catch (error) {
+        console.error("========== DELETE PRODUCT ERROR ==========");
+        console.error(error);
+        console.error("==========================================");
+
+        return {
+            success: false,
+            message: "Failed to delete product",
+        };
+    }
+}

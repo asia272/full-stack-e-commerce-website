@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { getAllProducts } from "@/app/actions/product";
+import DeleteProductButton from "@/components/admin/DeleteProductButton";
 
 export default async function AdminListItemsPage() {
     const products = await getAllProducts();
@@ -54,7 +55,7 @@ export default async function AdminListItemsPage() {
                                             <Image
                                                 src={product.image[0]}
                                                 alt={product.name}
-
+                                                fill
                                                 sizes="60px"
                                                 className="object-cover"
                                             />
@@ -86,13 +87,10 @@ export default async function AdminListItemsPage() {
 
                                 {/* Action */}
                                 <td className="px-[12px]">
-                                    <button
-                                        type="button"
-                                        aria-label={`Delete ${product.name}`}
-                                        className="text-[24px] font-light leading-none text-[#555] transition-colors hover:text-black"
-                                    >
-                                        ×
-                                    </button>
+                                    <DeleteProductButton
+                                        productId={product.id}
+                                        productName={product.name}
+                                    />
                                 </td>
                             </tr>
                         ))}
