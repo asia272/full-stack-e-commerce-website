@@ -10,6 +10,7 @@ import {
     removeCartItem,
     updateCartItem,
 } from "@/app/actions/cart";
+import Title from "../Title";
 
 type CartItem = {
     id: string;
@@ -102,6 +103,7 @@ export default function CartClient({
                     Add some products to your cart to continue shopping.
                 </p>
             </div>
+
         );
     }
 
@@ -128,12 +130,12 @@ export default function CartClient({
 
                         {/* PRODUCT INFO */}
                         <div className="min-w-0">
-                            <h2 className="text-[17px] font-medium leading-6 text-[#333] sm:text-[18px]">
+                            <h2 className="text-[22px] font-medium leading-6 text-[#494949] sm:text-[18px]">
                                 {item.product.name}
                             </h2>
 
                             <div className="mt-4 flex items-center gap-5">
-                                <span className="text-[18px] text-[#555]">
+                                <span className="text-[18px] text-[#494949]">
                                     ${item.product.price.toFixed(0)}
                                 </span>
 
@@ -185,7 +187,7 @@ export default function CartClient({
             <div className="mt-16 flex justify-end">
                 <div className="w-full max-w-[600px]">
                     {/* TITLE */}
-                    <div className="mb-8 flex items-center gap-4">
+                    {/* <div className="mb-8 flex items-center gap-4">
                         <h2 className="text-[24px] font-light uppercase text-[#777]">
                             Cart{" "}
                             <span className="font-semibold text-[#333]">
@@ -194,7 +196,8 @@ export default function CartClient({
                         </h2>
 
                         <span className="h-px w-10 bg-[#333]" />
-                    </div>
+                    </div> */}
+                    <Title title="CART" highlight="TOTALS" className="mb-8" highlightWeight="semibold" align="start" />
 
                     {/* SUBTOTAL */}
                     <div className="flex items-center justify-between border-b border-[#e5e5e5] pb-5 text-[14px]">
@@ -219,8 +222,8 @@ export default function CartClient({
                     </div>
 
                     {/* TOTAL */}
-                    <div className="flex items-center justify-between pt-5 text-[16px]">
-                        <span className="font-semibold text-[#444]">
+                    <div className="flex items-center justify-between pt-5 text-[18px]">
+                        <span className="font-semibold text-[#454545]">
                             Total
                         </span>
 
