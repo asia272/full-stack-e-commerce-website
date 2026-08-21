@@ -16,7 +16,7 @@ export default function Product({
 }: ProductProps) {
     return (
         <Link
-            href={`/product/${id}`}
+            href={`/products/${id}`}
             className="group block"
         >
             <div

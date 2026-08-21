@@ -38,6 +38,7 @@ export type CartItemMinAggregateOutputType = {
   id: string | null
   cartId: string | null
   productId: string | null
+  size: $Enums.ProductSize | null
   quantity: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -47,6 +48,7 @@ export type CartItemMaxAggregateOutputType = {
   id: string | null
   cartId: string | null
   productId: string | null
+  size: $Enums.ProductSize | null
   quantity: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -56,6 +58,7 @@ export type CartItemCountAggregateOutputType = {
   id: number
   cartId: number
   productId: number
+  size: number
   quantity: number
   createdAt: number
   updatedAt: number
@@ -75,6 +78,7 @@ export type CartItemMinAggregateInputType = {
   id?: true
   cartId?: true
   productId?: true
+  size?: true
   quantity?: true
   createdAt?: true
   updatedAt?: true
@@ -84,6 +88,7 @@ export type CartItemMaxAggregateInputType = {
   id?: true
   cartId?: true
   productId?: true
+  size?: true
   quantity?: true
   createdAt?: true
   updatedAt?: true
@@ -93,6 +98,7 @@ export type CartItemCountAggregateInputType = {
   id?: true
   cartId?: true
   productId?: true
+  size?: true
   quantity?: true
   createdAt?: true
   updatedAt?: true
@@ -189,6 +195,7 @@ export type CartItemGroupByOutputType = {
   id: string
   cartId: string
   productId: string
+  size: $Enums.ProductSize
   quantity: number
   createdAt: Date
   updatedAt: Date
@@ -221,6 +228,7 @@ export type CartItemWhereInput = {
   id?: Prisma.StringFilter<"CartItem"> | string
   cartId?: Prisma.StringFilter<"CartItem"> | string
   productId?: Prisma.StringFilter<"CartItem"> | string
+  size?: Prisma.EnumProductSizeFilter<"CartItem"> | $Enums.ProductSize
   quantity?: Prisma.IntFilter<"CartItem"> | number
   createdAt?: Prisma.DateTimeFilter<"CartItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CartItem"> | Date | string
@@ -232,6 +240,7 @@ export type CartItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   cartId?: Prisma.SortOrder
   productId?: Prisma.SortOrder
+  size?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -241,23 +250,25 @@ export type CartItemOrderByWithRelationInput = {
 
 export type CartItemWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  cartId_productId?: Prisma.CartItemCartIdProductIdCompoundUniqueInput
+  cartId_productId_size?: Prisma.CartItemCartIdProductIdSizeCompoundUniqueInput
   AND?: Prisma.CartItemWhereInput | Prisma.CartItemWhereInput[]
   OR?: Prisma.CartItemWhereInput[]
   NOT?: Prisma.CartItemWhereInput | Prisma.CartItemWhereInput[]
   cartId?: Prisma.StringFilter<"CartItem"> | string
   productId?: Prisma.StringFilter<"CartItem"> | string
+  size?: Prisma.EnumProductSizeFilter<"CartItem"> | $Enums.ProductSize
   quantity?: Prisma.IntFilter<"CartItem"> | number
   createdAt?: Prisma.DateTimeFilter<"CartItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CartItem"> | Date | string
   cart?: Prisma.XOR<Prisma.CartScalarRelationFilter, Prisma.CartWhereInput>
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
-}, "id" | "cartId_productId">
+}, "id" | "cartId_productId_size">
 
 export type CartItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   cartId?: Prisma.SortOrder
   productId?: Prisma.SortOrder
+  size?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -275,6 +286,7 @@ export type CartItemScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"CartItem"> | string
   cartId?: Prisma.StringWithAggregatesFilter<"CartItem"> | string
   productId?: Prisma.StringWithAggregatesFilter<"CartItem"> | string
+  size?: Prisma.EnumProductSizeWithAggregatesFilter<"CartItem"> | $Enums.ProductSize
   quantity?: Prisma.IntWithAggregatesFilter<"CartItem"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CartItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CartItem"> | Date | string
@@ -282,6 +294,7 @@ export type CartItemScalarWhereWithAggregatesInput = {
 
 export type CartItemCreateInput = {
   id?: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -293,6 +306,7 @@ export type CartItemUncheckedCreateInput = {
   id?: string
   cartId: string
   productId: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -300,6 +314,7 @@ export type CartItemUncheckedCreateInput = {
 
 export type CartItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,6 +326,7 @@ export type CartItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cartId?: Prisma.StringFieldUpdateOperationsInput | string
   productId?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -320,6 +336,7 @@ export type CartItemCreateManyInput = {
   id?: string
   cartId: string
   productId: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -327,6 +344,7 @@ export type CartItemCreateManyInput = {
 
 export type CartItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -336,6 +354,7 @@ export type CartItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cartId?: Prisma.StringFieldUpdateOperationsInput | string
   productId?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -351,15 +370,17 @@ export type CartItemOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type CartItemCartIdProductIdCompoundUniqueInput = {
+export type CartItemCartIdProductIdSizeCompoundUniqueInput = {
   cartId: string
   productId: string
+  size: $Enums.ProductSize
 }
 
 export type CartItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cartId?: Prisma.SortOrder
   productId?: Prisma.SortOrder
+  size?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -373,6 +394,7 @@ export type CartItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cartId?: Prisma.SortOrder
   productId?: Prisma.SortOrder
+  size?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -382,6 +404,7 @@ export type CartItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   cartId?: Prisma.SortOrder
   productId?: Prisma.SortOrder
+  size?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -475,6 +498,10 @@ export type CartItemUncheckedUpdateManyWithoutCartNestedInput = {
   deleteMany?: Prisma.CartItemScalarWhereInput | Prisma.CartItemScalarWhereInput[]
 }
 
+export type EnumProductSizeFieldUpdateOperationsInput = {
+  set?: $Enums.ProductSize
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -485,6 +512,7 @@ export type IntFieldUpdateOperationsInput = {
 
 export type CartItemCreateWithoutProductInput = {
   id?: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -494,6 +522,7 @@ export type CartItemCreateWithoutProductInput = {
 export type CartItemUncheckedCreateWithoutProductInput = {
   id?: string
   cartId: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -532,6 +561,7 @@ export type CartItemScalarWhereInput = {
   id?: Prisma.StringFilter<"CartItem"> | string
   cartId?: Prisma.StringFilter<"CartItem"> | string
   productId?: Prisma.StringFilter<"CartItem"> | string
+  size?: Prisma.EnumProductSizeFilter<"CartItem"> | $Enums.ProductSize
   quantity?: Prisma.IntFilter<"CartItem"> | number
   createdAt?: Prisma.DateTimeFilter<"CartItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CartItem"> | Date | string
@@ -539,6 +569,7 @@ export type CartItemScalarWhereInput = {
 
 export type CartItemCreateWithoutCartInput = {
   id?: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -548,6 +579,7 @@ export type CartItemCreateWithoutCartInput = {
 export type CartItemUncheckedCreateWithoutCartInput = {
   id?: string
   productId: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -582,6 +614,7 @@ export type CartItemUpdateManyWithWhereWithoutCartInput = {
 export type CartItemCreateManyProductInput = {
   id?: string
   cartId: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -589,6 +622,7 @@ export type CartItemCreateManyProductInput = {
 
 export type CartItemUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -598,6 +632,7 @@ export type CartItemUpdateWithoutProductInput = {
 export type CartItemUncheckedUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cartId?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -606,6 +641,7 @@ export type CartItemUncheckedUpdateWithoutProductInput = {
 export type CartItemUncheckedUpdateManyWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   cartId?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -614,6 +650,7 @@ export type CartItemUncheckedUpdateManyWithoutProductInput = {
 export type CartItemCreateManyCartInput = {
   id?: string
   productId: string
+  size: $Enums.ProductSize
   quantity?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -621,6 +658,7 @@ export type CartItemCreateManyCartInput = {
 
 export type CartItemUpdateWithoutCartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -630,6 +668,7 @@ export type CartItemUpdateWithoutCartInput = {
 export type CartItemUncheckedUpdateWithoutCartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   productId?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -638,6 +677,7 @@ export type CartItemUncheckedUpdateWithoutCartInput = {
 export type CartItemUncheckedUpdateManyWithoutCartInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   productId?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.EnumProductSizeFieldUpdateOperationsInput | $Enums.ProductSize
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -649,6 +689,7 @@ export type CartItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   cartId?: boolean
   productId?: boolean
+  size?: boolean
   quantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -660,6 +701,7 @@ export type CartItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   cartId?: boolean
   productId?: boolean
+  size?: boolean
   quantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -671,6 +713,7 @@ export type CartItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   cartId?: boolean
   productId?: boolean
+  size?: boolean
   quantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -682,12 +725,13 @@ export type CartItemSelectScalar = {
   id?: boolean
   cartId?: boolean
   productId?: boolean
+  size?: boolean
   quantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CartItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cartId" | "productId" | "quantity" | "createdAt" | "updatedAt", ExtArgs["result"]["cartItem"]>
+export type CartItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cartId" | "productId" | "size" | "quantity" | "createdAt" | "updatedAt", ExtArgs["result"]["cartItem"]>
 export type CartItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cart?: boolean | Prisma.CartDefaultArgs<ExtArgs>
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
@@ -711,6 +755,7 @@ export type $CartItemPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     cartId: string
     productId: string
+    size: $Enums.ProductSize
     quantity: number
     createdAt: Date
     updatedAt: Date
@@ -1142,6 +1187,7 @@ export interface CartItemFieldRefs {
   readonly id: Prisma.FieldRef<"CartItem", 'String'>
   readonly cartId: Prisma.FieldRef<"CartItem", 'String'>
   readonly productId: Prisma.FieldRef<"CartItem", 'String'>
+  readonly size: Prisma.FieldRef<"CartItem", 'ProductSize'>
   readonly quantity: Prisma.FieldRef<"CartItem", 'Int'>
   readonly createdAt: Prisma.FieldRef<"CartItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CartItem", 'DateTime'>

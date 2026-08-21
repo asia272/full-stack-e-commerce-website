@@ -378,11 +378,9 @@ export default function Navbar() {
 
                     </div>
 
-                    type="button"
-                    aria-label={mobileOpen ? "Close menu" : "Open menu"}
-                    aria-expanded={mobileOpen}
-                    onClick={() => setMobileOpen((prev) => !prev)}
-                    className="
+                    {/* -------------------------------------------------
+              MOBILE MENU BUTTON
+          -------------------------------------------------- */}
 
                     {/* MOBILE ACTIONS + MENU BUTTON */}
                     <div className="flex items-center gap-[10px] lg:hidden">
