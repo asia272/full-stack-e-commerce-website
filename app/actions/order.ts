@@ -1,13 +1,13 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
-import Stripe from "stripe";
 
+
+import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { getAuthenticatedUser } from "@/lib/utils";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
 
 type PaymentMethod = "STRIPE" | "COD";
 
@@ -26,17 +26,6 @@ type PlaceOrderInput = {
 
 const SHIPPING_COST = 10;
 
-async function getAuthenticatedUser() {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-        return null;
-    }
-
-    return session.user;
-}
 
 export async function placeOrder(input: PlaceOrderInput) {
     try {

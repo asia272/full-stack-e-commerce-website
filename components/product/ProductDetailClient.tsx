@@ -6,6 +6,7 @@ import { Star } from "lucide-react";
 import { toast } from "sonner";
 
 import { addToCart } from "@/app/actions/cart";
+import { useCart } from "../CartProvider";
 
 type ProductSize = "S" | "M" | "L" | "XL" | "XXL";
 
@@ -28,6 +29,7 @@ export default function ProductDetailClient({
         useState<ProductSize | null>(null);
 
     const [isPending, startTransition] = useTransition();
+    const { refreshCart } = useCart();
 
     const handleAddToCart = () => {
         if (!selectedSize) {
@@ -43,6 +45,7 @@ export default function ProductDetailClient({
 
             if (result.success) {
                 toast.success(result.message);
+                await refreshCart()
             } else {
                 toast.error(result.message);
             }

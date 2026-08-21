@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { getAuthenticatedUser } from "@/lib/utils";
 
 type AddToCartInput = {
     productId: string;
@@ -115,17 +116,7 @@ export async function addToCart({
 
 type CartSize = "S" | "M" | "L" | "XL" | "XXL";
 
-async function getAuthenticatedUser() {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    if (!session?.user?.id) {
-        return null;
-    }
-
-    return session.user;
-}
 
 export async function updateCartItem(
     cartItemId: string,
@@ -239,5 +230,31 @@ export async function removeCartItem(cartItemId: string) {
             success: false,
             message: "Unable to remove item.",
         };
+    }
+}
+export async function getCartCount() {
+    try {
+        const user = await getAuthenticatedUser();
+
+        if (!user) {
+            return 0;
+        }
+
+        const result = await prisma.cartItem.aggregate({
+            where: {
+                cart: {
+                    userId: user.id,
+                },
+            },
+            _sum: {
+                quantity: true,
+            },
+        });
+
+        return result._sum.quantity ?? 0;
+    } catch (error) {
+        console.error("GET CART COUNT ERROR:", error);
+
+        return 0;
     }
 }

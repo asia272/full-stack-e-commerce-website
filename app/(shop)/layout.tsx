@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/components/CartProvider";
 
 export default function ShopLayout({
     children,
@@ -8,13 +9,16 @@ export default function ShopLayout({
 }) {
     return (
         <div className="min-h-screen flex flex-col">
-            <Navbar />
+            <CartProvider>
+                <Navbar />
 
-            <main className="flex-1">
-                {children}
-            </main>
+                <main className="flex-1">
+                    {children}
+                </main>
 
-            <Footer />
+                <Footer />
+            </CartProvider>
+
         </div>
     );
 }

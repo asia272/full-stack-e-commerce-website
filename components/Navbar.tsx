@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCart } from "@/components/CartProvider";
+
 import {
     Search,
     UserRound,
@@ -39,6 +41,7 @@ export default function Navbar() {
 
     const { data: session, isPending } = authClient.useSession();
     const isLoggedIn = !!session?.user;
+    const { cartCount } = useCart();
 
     const [profileOpen, setProfileOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -369,7 +372,7 @@ export default function Navbar() {
                   text-white
                 "
                                     >
-                                        2
+                                        {cartCount}
                                     </span>
                                 </Link>
                             </>
@@ -579,7 +582,7 @@ export default function Navbar() {
                   text-white
                 "
                                     >
-                                        2
+                                        {cartCount}
                                     </span>
                                 </Link>
                             </>
