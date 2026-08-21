@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Product from "@/components/product/Product";
+import Title from "../Title";
 
 type RelatedProductsProps = {
     productId: string;
@@ -40,16 +41,7 @@ export default async function RelatedProducts({
 
     return (
         <section className="mt-[100px]">
-            <div className="mb-10 flex items-center justify-center gap-4">
-                <h2 className="text-[24px] font-light uppercase text-[#777]">
-                    Related{" "}
-                    <span className="font-semibold text-[#333]">
-                        Products
-                    </span>
-                </h2>
-
-                <span className="h-px w-8 bg-[#333]" />
-            </div>
+            <Title title="RELATED" highlight="PRODUCTS" highlightWeight="semibold" />
 
             <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
                 {serializedProducts.map((product) => (
