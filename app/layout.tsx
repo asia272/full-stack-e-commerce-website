@@ -11,8 +11,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Your Store",
-  description: "Your e-commerce store",
+  title: "Your Store | Fashion & Clothing",
+  description:
+    "Shop the latest fashion for men, women, and children. Discover quality clothing, bestsellers, and new arrivals at Your Store.",
 };
 
 export default function RootLayout({

@@ -7,9 +7,149 @@ datasource db {
   provider = "postgresql"
 }
 
-// =======================
-// ENUMS
-// =======================
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  cart          Cart?
+  orders        Order[]
+  sessions      Session[]
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  issuer                String?
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
+model Product {
+  id           String             @id @default(cuid())
+  name         String
+  description  String
+  category     ProductCategory
+  subCategory  ProductSubCategory
+  price        Decimal            @db.Decimal(10, 2)
+  sizes        ProductSize[]
+  isBestSeller Boolean            @default(false)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  image        String[]
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+}
+
+model CartItem {
+  id        String      @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int         @default(1)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  size      ProductSize
+  cart      Cart        @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId, size])
+}
+
+model Order {
+  id              String               @id @default(cuid())
+  userId          String
+  status          OrderStatus          @default(ORDER_PLACED)
+  paymentStatus   PaymentStatus        @default(PENDING)
+  paymentMethod   PaymentMethod        @default(STRIPE)
+  subtotal        Decimal              @db.Decimal(10, 2)
+  shippingCost    Decimal              @db.Decimal(10, 2)
+  total           Decimal              @db.Decimal(10, 2)
+  stripeSessionId String?              @unique
+  stripePaymentId String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  deliveryInfo    DeliveryInformation?
+  user            User                 @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        String      @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal     @db.Decimal(10, 2)
+  size      ProductSize
+  createdAt DateTime    @default(now())
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product     @relation(fields: [productId], references: [id])
+}
+
+model DeliveryInformation {
+  id        String   @id @default(cuid())
+  orderId   String   @unique
+  firstName String
+  lastName  String
+  email     String
+  street    String
+  city      String
+  state     String
+  zipCode   String
+  country   String
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
 
 enum UserRole {
   USER
@@ -54,222 +194,4 @@ enum PaymentMethod {
   STRIPE
   RAZORPAY
   COD
-}
-
-// =======================
-// USER
-// =======================
-
-model User {
-  id String @id @default(cuid())
-
-  name          String?
-  email         String  @unique
-  emailVerified Boolean @default(false)
-  image         String?
-
-  role UserRole @default(USER)
-
-  cart   Cart?
-  orders Order[]
-
-  sessions Session[]
-  accounts Account[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Account {
-  id String @id
-
-  accountId  String
-  providerId String
-
-  userId String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  issuer String?
-
-  accessToken  String?
-  refreshToken String?
-  idToken      String?
-
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-
-  scope    String?
-  password String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([providerId, accountId])
-}
-
-model Verification {
-  id String @id
-
-  identifier String
-  value      String
-
-  expiresAt DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([identifier, value])
-}
-
-// =======================
-// PRODUCT
-// =======================
-
-model Product {
-  id String @id @default(cuid())
-
-  image       String[]
-  name        String
-  description String
-
-  category    ProductCategory
-  subCategory ProductSubCategory
-
-  price Decimal @db.Decimal(10, 2)
-
-  sizes ProductSize[]
-
-  isBestSeller Boolean @default(false)
-
-  cartItems  CartItem[]
-  orderItems OrderItem[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// =======================
-// CART
-// =======================
-
-model Cart {
-  id String @id @default(cuid())
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  items CartItem[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// =======================
-// CART ITEM
-// =======================
-
-model CartItem {
-  id String @id @default(cuid())
-
-  cartId    String
-  productId String
-  size      ProductSize
-  quantity  Int         @default(1)
-
-  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([cartId, productId, size])
-}
-
-// =======================
-// ORDER
-// =======================
-
-model Order {
-  id String @id @default(cuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  status OrderStatus @default(ORDER_PLACED)
-
-  paymentStatus PaymentStatus @default(PENDING)
-  paymentMethod PaymentMethod @default(STRIPE)
-
-  subtotal     Decimal @db.Decimal(10, 2)
-  shippingCost Decimal @db.Decimal(10, 2)
-  total        Decimal @db.Decimal(10, 2)
-
-  stripeSessionId String? @unique
-  stripePaymentId String?
-
-  items OrderItem[]
-
-  deliveryInfo DeliveryInformation?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// =======================
-// ORDER ITEM
-// =======================
-model OrderItem {
-  id String @id @default(cuid())
-
-  orderId   String
-  productId String
-
-  quantity Int
-  price    Decimal     @db.Decimal(10, 2)
-  size     ProductSize
-
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
-
-  createdAt DateTime @default(now())
-}
-
-// =======================
-// DELIVERY INFORMATION
-// =======================
-
-model DeliveryInformation {
-  id String @id @default(cuid())
-
-  orderId String @unique
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  firstName String
-  lastName  String
-  email     String
-
-  street  String
-  city    String
-  state   String
-  zipCode String
-  country String
-
-  phone String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

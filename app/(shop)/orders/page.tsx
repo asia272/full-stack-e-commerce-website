@@ -1,8 +1,11 @@
 import { getMyOrders } from "@/app/actions/order";
 import OrdersList from "@/components/order/OrdersList";
 import Title from "@/components/Title";
+import { connection } from "next/server";
 
 export default async function OrdersPage() {
+
+    await connection();
     const result = await getMyOrders();
 
     if (!result.success) {
