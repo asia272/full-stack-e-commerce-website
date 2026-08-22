@@ -2,11 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, Check } from "lucide-react";
 
-import { getMyOrders } from "@/app/actions/order";
-import type {
-    Order,
-    OrderStatus,
-} from "@/components/order/OrderCard";
+import { getOrderById } from "@/app/actions/order";
+import type { OrderStatus } from "@/components/order/OrderCard";
 
 interface OrderDetailsPageProps {
     params: Promise<{
@@ -56,7 +53,7 @@ function OrderTimeline({
     return (
         <div className="mt-8">
             <div className="relative">
-                {/* LINE */}
+                {/* VERTICAL LINE */}
                 <div
                     className="
                         absolute
@@ -70,14 +67,14 @@ function OrderTimeline({
 
                 <div className="relative space-y-7">
                     {statusSteps.map((step, index) => {
-                        const completed =
-                            index <= currentIndex;
+                        const completed = index <= currentIndex;
 
                         return (
                             <div
                                 key={step}
                                 className="flex items-start gap-5"
                             >
+                                {/* STEP CIRCLE */}
                                 <div
                                     className={`
                                         relative
@@ -104,6 +101,7 @@ function OrderTimeline({
                                     )}
                                 </div>
 
+                                {/* STEP TEXT */}
                                 <div className="pt-0.5">
                                     <p
                                         className={`
@@ -131,34 +129,30 @@ export default async function OrderDetailsPage({
 }: OrderDetailsPageProps) {
     const { id } = await params;
 
-    const result = await getMyOrders();
+    /*
+     * GET ONLY THIS ORDER
+     *
+     * The server action also verifies that
+     * the order belongs to the authenticated user.
+     */
+    const result = await getOrderById(id);
 
-    if (!result.success) {
-        return (
-            <main className="min-h-screen bg-white px-5 py-16">
-                <div className="mx-auto max-w-[1200px]">
-                    <p className="text-sm text-[#777777]">
-                        {result.message}
-                    </p>
-                </div>
-            </main>
-        );
-    }
-
-    const order = result.orders.find(
-        (item: Order) => item.id === id
-    );
-
-    if (!order) {
+    /*
+     * ERROR
+     */
+    if (!result.success || !result.order) {
         return (
             <main className="min-h-screen bg-white">
                 <div
                     className="
                         mx-auto
+                        w-full
                         max-w-[1200px]
                         px-5
-                        py-16
+                        py-14
                         sm:px-8
+                        lg:px-10
+                        lg:py-16
                     "
                 >
                     <Link
@@ -167,26 +161,35 @@ export default async function OrderDetailsPage({
                             inline-flex
                             items-center
                             gap-2
-                            text-sm
+                            text-[15px]
                             text-[#555555]
+                            transition-colors
                             hover:text-black
                         "
                     >
-                        <ChevronLeft className="h-4 w-4" />
+                        <ChevronLeft
+                            className="h-4 w-4"
+                            strokeWidth={1.5}
+                        />
+
                         Back to Orders
                     </Link>
 
-                    <h1 className="mt-12 text-3xl font-medium text-[#333333]">
-                        Order not found
-                    </h1>
+                    <div className="mt-16">
+                        <h1 className="text-[28px] font-medium text-[#333333]">
+                            Order not found
+                        </h1>
 
-                    <p className="mt-3 text-sm text-[#777777]">
-                        We couldn't find this order in your account.
-                    </p>
+                        <p className="mt-3 text-[15px] text-[#777777]">
+                            {result.message}
+                        </p>
+                    </div>
                 </div>
             </main>
         );
     }
+
+    const order = result.order;
 
     return (
         <main className="min-h-screen bg-white">
@@ -202,7 +205,10 @@ export default async function OrderDetailsPage({
                     lg:py-16
                 "
             >
-                {/* BACK */}
+                {/* =========================================
+                    BACK TO ORDERS
+                ========================================== */}
+
                 <Link
                     href="/orders"
                     className="
@@ -219,16 +225,20 @@ export default async function OrderDetailsPage({
                         className="h-4 w-4"
                         strokeWidth={1.5}
                     />
+
                     Back to Orders
                 </Link>
 
-                {/* HEADER */}
+                {/* =========================================
+                    PAGE HEADER
+                ========================================== */}
+
                 <div
                     className="
                         mt-8
                         flex
                         flex-col
-                        gap-4
+                        gap-5
                         border-b
                         border-[#D9D9D9]
                         pb-7
@@ -243,6 +253,8 @@ export default async function OrderDetailsPage({
                                 className="
                                     text-[28px]
                                     font-medium
+                                    leading-none
+                                    tracking-[-0.5px]
                                     text-[#707070]
                                 "
                             >
@@ -253,22 +265,39 @@ export default async function OrderDetailsPage({
                                 className="
                                     text-[28px]
                                     font-semibold
+                                    leading-none
+                                    tracking-[-0.5px]
                                     text-[#303030]
                                 "
                             >
                                 DETAILS
                             </h1>
 
-                            <span className="ml-1 h-[2px] w-[45px] bg-[#444444]" />
+                            <span
+                                className="
+                                    ml-1
+                                    mt-1
+                                    h-[2px]
+                                    w-[45px]
+                                    bg-[#444444]
+                                "
+                            />
                         </div>
 
-                        <p className="mt-4 text-sm text-[#777777]">
+                        <p className="mt-4 text-[14px] text-[#777777]">
                             Order #{order.id}
                         </p>
                     </div>
 
                     <div className="text-left sm:text-right">
-                        <p className="text-xs uppercase tracking-[0.12em] text-[#999999]">
+                        <p
+                            className="
+                                text-[11px]
+                                uppercase
+                                tracking-[0.12em]
+                                text-[#999999]
+                            "
+                        >
                             Order Date
                         </p>
 
@@ -278,7 +307,10 @@ export default async function OrderDetailsPage({
                     </div>
                 </div>
 
-                {/* CONTENT */}
+                {/* =========================================
+                    MAIN CONTENT
+                ========================================== */}
+
                 <div
                     className="
                         mt-10
@@ -288,7 +320,11 @@ export default async function OrderDetailsPage({
                         lg:grid-cols-[minmax(0,1fr)_340px]
                     "
                 >
-                    {/* PRODUCTS */}
+                    {/* =====================================
+                        LEFT
+                        ORDER ITEMS
+                    ====================================== */}
+
                     <section>
                         <h2 className="text-[20px] font-medium text-[#333333]">
                             Items
@@ -306,7 +342,10 @@ export default async function OrderDetailsPage({
                                         py-6
                                     "
                                 >
-                                    <div
+                                    {/* IMAGE */}
+
+                                    <Link
+                                        href={`/products/${item.product.id}`}
                                         className="
                                             relative
                                             h-[120px]
@@ -318,33 +357,36 @@ export default async function OrderDetailsPage({
                                     >
                                         <Image
                                             src={
-                                                item.product
-                                                    .image[0]
+                                                item.product.image[0]
                                             }
                                             alt={
-                                                item.product
-                                                    .name
+                                                item.product.name
                                             }
                                             fill
                                             sizes="105px"
                                             className="object-cover"
                                         />
-                                    </div>
+                                    </Link>
+
+                                    {/* PRODUCT INFO */}
 
                                     <div className="min-w-0 flex-1">
                                         <Link
                                             href={`/products/${item.product.id}`}
                                             className="
+                                                block
                                                 text-[17px]
                                                 font-medium
+                                                leading-[1.4]
                                                 text-[#444444]
+                                                transition-opacity
                                                 hover:opacity-60
                                             "
                                         >
                                             {item.product.name}
                                         </Link>
 
-                                        <div className="mt-4 space-y-2 text-sm text-[#666666]">
+                                        <div className="mt-4 space-y-2 text-[14px] text-[#666666]">
                                             <p>
                                                 Quantity:{" "}
                                                 <span className="text-[#333333]">
@@ -373,11 +415,15 @@ export default async function OrderDetailsPage({
                             ))}
                         </div>
 
-                        {/* SUMMARY */}
+                        {/* =====================================
+                            ORDER SUMMARY
+                        ====================================== */}
+
                         <div className="mt-7 ml-auto max-w-[360px]">
-                            <div className="space-y-3 text-sm">
+                            <div className="space-y-3 text-[14px]">
                                 <div className="flex justify-between text-[#777777]">
                                     <span>Subtotal</span>
+
                                     <span>
                                         {formatPrice(
                                             order.subtotal
@@ -387,6 +433,7 @@ export default async function OrderDetailsPage({
 
                                 <div className="flex justify-between text-[#777777]">
                                     <span>Shipping</span>
+
                                     <span>
                                         {formatPrice(
                                             order.shippingCost
@@ -394,8 +441,20 @@ export default async function OrderDetailsPage({
                                     </span>
                                 </div>
 
-                                <div className="flex justify-between border-t border-[#D9D9D9] pt-4 text-[17px] font-medium text-[#333333]">
+                                <div
+                                    className="
+                                        flex
+                                        justify-between
+                                        border-t
+                                        border-[#D9D9D9]
+                                        pt-4
+                                        text-[17px]
+                                        font-medium
+                                        text-[#333333]
+                                    "
+                                >
                                     <span>Total</span>
+
                                     <span>
                                         {formatPrice(
                                             order.total
@@ -404,9 +463,123 @@ export default async function OrderDetailsPage({
                                 </div>
                             </div>
                         </div>
+
+                        {/* =====================================
+                            DELIVERY INFORMATION
+                        ====================================== */}
+
+                        {order.deliveryInfo && (
+                            <div className="mt-12 border-t border-[#D9D9D9] pt-7">
+                                <h2 className="text-[20px] font-medium text-[#333333]">
+                                    Delivery Information
+                                </h2>
+
+                                <div
+                                    className="
+                                        mt-5
+                                        grid
+                                        grid-cols-1
+                                        gap-x-10
+                                        gap-y-5
+                                        text-[14px]
+                                        sm:grid-cols-2
+                                    "
+                                >
+                                    <div>
+                                        <p className="text-[11px] uppercase tracking-[0.1em] text-[#999999]">
+                                            Name
+                                        </p>
+
+                                        <p className="mt-1 text-[#444444]">
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .firstName
+                                            }{" "}
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .lastName
+                                            }
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-[11px] uppercase tracking-[0.1em] text-[#999999]">
+                                            Phone
+                                        </p>
+
+                                        <p className="mt-1 text-[#444444]">
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .phone
+                                            }
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-[11px] uppercase tracking-[0.1em] text-[#999999]">
+                                            Email
+                                        </p>
+
+                                        <p className="mt-1 break-all text-[#444444]">
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .email
+                                            }
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-[11px] uppercase tracking-[0.1em] text-[#999999]">
+                                            Address
+                                        </p>
+
+                                        <p className="mt-1 leading-6 text-[#444444]">
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .street
+                                            }
+                                            <br />
+
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .city
+                                            }
+                                            ,{" "}
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .state
+                                            }{" "}
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .zipCode
+                                            }
+                                            <br />
+
+                                            {
+                                                order
+                                                    .deliveryInfo
+                                                    .country
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </section>
 
-                    {/* TRACKING */}
+                    {/* =====================================
+                        RIGHT
+                        ORDER TRACKING
+                    ====================================== */}
+
                     <aside
                         className="
                             h-fit
@@ -415,31 +588,47 @@ export default async function OrderDetailsPage({
                             p-6
                         "
                     >
-                        <div className="flex items-center justify-between">
+                        {/* TRACKING HEADER */}
+
+                        <div className="flex flex-col gap-3">
                             <h2 className="text-[20px] font-medium text-[#333333]">
                                 Track Order
                             </h2>
 
-                            <span className="flex items-center gap-2 text-sm text-[#444444]">
+                            <span className="flex items-center gap-2 text-[14px] text-[#444444]">
                                 <span className="h-2.5 w-2.5 rounded-full bg-[#00A63C]" />
-                                {statusLabels[order.status]}
+
+                                {statusLabels[order.status as OrderStatus]}
                             </span>
                         </div>
 
+                        {/* TIMELINE */}
+
                         <OrderTimeline
-                            status={order.status}
+                            status={
+                                order.status as OrderStatus
+                            }
                         />
 
+                        {/* PAYMENT */}
+
                         <div className="mt-9 border-t border-[#E2E2E2] pt-5">
-                            <p className="text-xs uppercase tracking-[0.1em] text-[#999999]">
+                            <p
+                                className="
+                                    text-[11px]
+                                    uppercase
+                                    tracking-[0.1em]
+                                    text-[#999999]
+                                "
+                            >
                                 Payment
                             </p>
 
-                            <p className="mt-2 text-sm text-[#444444]">
+                            <p className="mt-2 text-[14px] text-[#444444]">
                                 {order.paymentStatus}
                             </p>
 
-                            <p className="mt-1 text-sm text-[#666666]">
+                            <p className="mt-1 text-[14px] text-[#666666]">
                                 {order.paymentMethod}
                             </p>
                         </div>

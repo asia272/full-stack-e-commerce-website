@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/utils";
+import { requireAdmin } from "@/lib/auth-guard";
 
 
 
@@ -409,6 +410,200 @@ export async function getMyOrders() {
             success: false,
             message: "Something went wrong while loading your orders.",
             orders: [],
+        };
+    }
+}
+export async function getOrderById(orderId: string) {
+    try {
+        const user = await getAuthenticatedUser();
+
+        if (!user) {
+            return {
+                success: false,
+                message: "Please login to view this order.",
+                order: null,
+            };
+        }
+
+        if (!orderId?.trim()) {
+            return {
+                success: false,
+                message: "Invalid order ID.",
+                order: null,
+            };
+        }
+
+        const order = await prisma.order.findFirst({
+            where: {
+                id: orderId,
+                userId: user.id,
+            },
+
+            include: {
+                items: {
+                    orderBy: {
+                        createdAt: "asc",
+                    },
+
+                    include: {
+                        product: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+
+                deliveryInfo: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        phone: true,
+                        street: true,
+                        city: true,
+                        state: true,
+                        zipCode: true,
+                        country: true,
+                    },
+                },
+            },
+        });
+
+        if (!order) {
+            return {
+                success: false,
+                message: "Order not found.",
+                order: null,
+            };
+        }
+
+        return {
+            success: true,
+
+            order: {
+                id: order.id,
+
+                status: order.status,
+
+                paymentStatus: order.paymentStatus,
+
+                paymentMethod: order.paymentMethod,
+
+                subtotal: Number(order.subtotal),
+
+                shippingCost: Number(order.shippingCost),
+
+                total: Number(order.total),
+
+                createdAt: order.createdAt.toISOString(),
+
+                items: order.items.map((item) => ({
+                    id: item.id,
+
+                    quantity: item.quantity,
+
+                    size: item.size,
+
+                    price: Number(item.price),
+
+                    product: {
+                        id: item.product.id,
+
+                        name: item.product.name,
+
+                        image: item.product.image,
+                    },
+                })),
+
+                deliveryInfo: order.deliveryInfo,
+            },
+        };
+    } catch (error) {
+        console.error("GET ORDER BY ID ERROR:", error);
+
+        return {
+            success: false,
+            message: "Something went wrong while loading the order.",
+            order: null,
+        };
+    }
+}
+
+
+
+
+//Admin actions
+
+
+export async function getAllOrders() {
+    await requireAdmin();
+
+    try {
+        const orders = await prisma.order.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+            include: {
+                items: {
+                    include: {
+                        product: true,
+                    },
+                },
+                deliveryInfo: true,
+            },
+        });
+
+        return {
+            success: true,
+            orders,
+        };
+    } catch (error) {
+        console.error("GET ALL ORDERS ERROR:", error);
+
+        return {
+            success: false,
+            message: "Failed to fetch orders.",
+        };
+    }
+}
+export async function updateOrderStatus(
+    orderId: string,
+    status:
+        | "ORDER_PLACED"
+        | "PACKING"
+        | "SHIPPED"
+        | "OUT_FOR_DELIVERY"
+        | "DELIVERED"
+) {
+    await requireAdmin();
+
+    try {
+        const order = await prisma.order.update({
+            where: {
+                id: orderId,
+            },
+            data: {
+                status,
+            },
+        });
+
+        revalidatePath("/admin/orders");
+        revalidatePath(`/orders/${orderId}`);
+        revalidatePath("/orders");
+
+        return {
+            success: true,
+            order,
+        };
+    } catch (error) {
+        console.error("UPDATE ORDER STATUS ERROR:", error);
+
+        return {
+            success: false,
+            message: "Failed to update order status.",
         };
     }
 }
