@@ -310,3 +310,105 @@ export async function placeOrder(input: PlaceOrderInput) {
         };
     }
 }
+
+export async function getMyOrders() {
+    try {
+        const user = await getAuthenticatedUser();
+
+        if (!user) {
+            return {
+                success: false,
+                message: "Please login to view your orders.",
+                orders: [],
+            };
+        }
+
+        const orders = await prisma.order.findMany({
+            where: {
+                userId: user.id,
+            },
+
+            orderBy: {
+                createdAt: "desc",
+            },
+
+            include: {
+                items: {
+                    orderBy: {
+                        createdAt: "asc",
+                    },
+
+                    include: {
+                        product: {
+                            select: {
+                                id: true,
+                                name: true,
+                                image: true,
+                            },
+                        },
+                    },
+                },
+
+                deliveryInfo: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        city: true,
+                        state: true,
+                        country: true,
+                    },
+                },
+            },
+        });
+
+        return {
+            success: true,
+
+            orders: orders.map((order) => ({
+                id: order.id,
+
+                status: order.status,
+
+                paymentStatus: order.paymentStatus,
+
+                paymentMethod: order.paymentMethod,
+
+                subtotal: Number(order.subtotal),
+
+                shippingCost: Number(order.shippingCost),
+
+                total: Number(order.total),
+
+                createdAt: order.createdAt.toISOString(),
+
+                items: order.items.map((item) => ({
+                    id: item.id,
+
+                    quantity: item.quantity,
+
+                    size: item.size,
+
+                    price: Number(item.price),
+
+                    product: {
+                        id: item.product.id,
+
+                        name: item.product.name,
+
+                        image: item.product.image,
+                    },
+                })),
+
+                deliveryInfo: order.deliveryInfo,
+            })),
+        };
+    } catch (error) {
+        console.error("GET MY ORDERS ERROR:", error);
+
+        return {
+            success: false,
+            message: "Something went wrong while loading your orders.",
+            orders: [],
+        };
+    }
+}

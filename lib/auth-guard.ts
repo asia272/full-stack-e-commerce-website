@@ -8,7 +8,7 @@ export async function requireAdmin() {
         headers: await headers(),
     });
 
-    // Not logged in → home
+    // Not logged in → login
     if (!session?.user) {
         redirect("/login");
     }
