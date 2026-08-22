@@ -271,13 +271,10 @@ export default function AuthForm() {
 
     return (
         <div
-            className={`mx-auto w-full ${isLogin ? "max-w-[765px]" : "max-w-[585px]"
-                }`}
-        >
+            className={"mx-auto w-full max-w-[585px]"} >
             {/* ================= TITLE ================= */}
             <div
-                className={`text-center ${isLogin ? "mb-[70px]" : "mb-[55px]"
-                    }`}
+                className={`text-center mb-[55px] `}
             >
                 <h1
                     className={`
@@ -285,10 +282,7 @@ export default function AuthForm() {
                         font-normal
                         tracking-[-0.03em]
                         text-[#414141]
-                        ${isLogin
-                            ? "text-[64px] leading-[1]"
-                            : "text-[52px] leading-[1]"
-                        }
+                       text-[52px] leading-[1]
                     `}
                 >
                     {isLogin ? "Login" : "Sign Up"}
@@ -340,6 +334,8 @@ export default function AuthForm() {
                         required
                         autoComplete="email"
                         className={`
+                              h-[61px]
+                              text-[17px]
                             w-full
                             border
                             border-[#000000]
@@ -351,10 +347,7 @@ export default function AuthForm() {
                             outline-none
                             placeholder:text-[#707070]
                             focus:border-[#222222]
-                            ${isLogin
-                                ? "h-[80px] text-[24px]"
-                                : "h-[61px] text-[17px]"
-                            }
+                            
                         `}
                     />
                 </div>
@@ -372,6 +365,8 @@ export default function AuthForm() {
                             isLogin ? "current-password" : "new-password"
                         }
                         className={`
+                               h-[61px]
+                              text-[17px]
                             w-full
                             border
                             border-[#000000]
@@ -383,10 +378,7 @@ export default function AuthForm() {
                             outline-none
                             placeholder:text-[#707070]
                             focus:border-[#222222]
-                            ${isLogin
-                                ? "h-[80px] text-[24px]"
-                                : "h-[61px] text-[17px]"
-                            }
+                            
                         `}
                     />
                 </div>
@@ -430,13 +422,13 @@ export default function AuthForm() {
                         type="submit"
                         disabled={loading}
                         className="
-                            h-[79px]
-                            w-[224px]
+                            h-[59px]
+                            w-[200px]
                             border
                             border-[#222222]
-                            bg-[#222222]
+                            bg-[#0b0606]
                             font-[Outfit]
-                            text-[23px]
+                            text-[20px]
                             font-normal
                             text-white
                             transition
