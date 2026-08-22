@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { updateOrderStatus } from "@/app/actions/order";
 import type { OrderStatus } from "@/components/order/OrderCard";
+import { toast } from "sonner";
 
 interface OrderStatusSelectProps {
     orderId: string;
@@ -25,9 +26,11 @@ export default function OrderStatusSelect({
                 orderId,
                 status
             );
-
-            if (!result.success) {
-                alert(result.message);
+            if (result.success) {
+                toast.success("Order status updated successfully")
+            }
+            else {
+                toast.error(result.message);
             }
         });
     }

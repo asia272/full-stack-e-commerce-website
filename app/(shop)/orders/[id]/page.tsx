@@ -4,6 +4,7 @@ import { ChevronLeft, Check } from "lucide-react";
 
 import { getOrderById } from "@/app/actions/order";
 import type { OrderStatus } from "@/components/order/OrderCard";
+import Title from "@/components/Title";
 
 interface OrderDetailsPageProps {
     params: Promise<{
@@ -248,7 +249,7 @@ export default async function OrderDetailsPage({
                     "
                 >
                     <div>
-                        <div className="flex items-center gap-3">
+                        {/* <div className="flex items-center gap-3">
                             <h1
                                 className="
                                     text-[28px]
@@ -282,7 +283,8 @@ export default async function OrderDetailsPage({
                                     bg-[#444444]
                                 "
                             />
-                        </div>
+                        </div> */}
+                        <Title title=" ORDER" highlight=" DETAILS" align="start" highlightWeight="semibold" className="mb-0" />
 
                         <p className="mt-4 text-[14px] text-[#777777]">
                             Order #{order.id}

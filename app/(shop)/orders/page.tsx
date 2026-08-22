@@ -1,5 +1,6 @@
 import { getMyOrders } from "@/app/actions/order";
 import OrdersList from "@/components/order/OrdersList";
+import Title from "@/components/Title";
 
 export default async function OrdersPage() {
     const result = await getMyOrders();
@@ -86,44 +87,7 @@ export default async function OrdersPage() {
                 {/* =========================================
                     PAGE HEADER
                 ========================================== */}
-                <div className="flex items-center gap-3">
-                    <h1
-                        className="
-                            text-[28px]
-                            font-medium
-                            leading-none
-                            tracking-[-0.5px]
-                            text-[#707070]
-                            sm:text-[30px]
-                        "
-                    >
-                        MY
-                    </h1>
-
-                    <h1
-                        className="
-                            text-[28px]
-                            font-semibold
-                            leading-none
-                            tracking-[-0.5px]
-                            text-[#303030]
-                            sm:text-[30px]
-                        "
-                    >
-                        ORDERS
-                    </h1>
-
-                    <span
-                        className="
-                            ml-1
-                            mt-1
-                            h-[2px]
-                            w-[50px]
-                            bg-[#444444]
-                        "
-                    />
-                </div>
-
+                <Title title="MY" highlight="ORDERS" align="start" highlightWeight="semibold" className="mb-0" />
                 {/* =========================================
                     HEADER DIVIDER
                 ========================================== */}
