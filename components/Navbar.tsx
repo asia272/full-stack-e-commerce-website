@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 
 import {
@@ -38,6 +38,7 @@ const navItems = [
 
 export default function Navbar() {
     const pathname = usePathname();
+    const router = useRouter();
 
     const { data: session, isPending } = authClient.useSession();
     const isLoggedIn = !!session?.user;
@@ -73,6 +74,15 @@ export default function Navbar() {
 
         return pathname.startsWith(href);
     };
+    const handleLogout = async () => {
+
+        await authClient.signOut();
+        setProfileOpen(false);
+
+        router.refresh();
+        router.push("/login");
+    }
+
 
     return (
         <> <header className="w-full bg-white">
@@ -302,10 +312,7 @@ export default function Navbar() {
                                                 </Link>
 
                                                 <button
-                                                    onClick={async () => {
-                                                        await authClient.signOut();
-                                                        setProfileOpen(false);
-                                                    }}
+                                                    onClick={handleLogout}
                                                     type="button"
                                                     className="
                         w-fit

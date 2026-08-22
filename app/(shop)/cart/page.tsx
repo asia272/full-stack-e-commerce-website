@@ -5,19 +5,16 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import CartClient from "@/components/cart/CartClient";
 import Title from "@/components/Title";
+import { getAuthenticatedUser } from "@/lib/utils";
 
 export default async function CartPage() {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
 
-    if (!session?.user?.id) {
-        redirect("/login");
-    }
+
+    const user = await getAuthenticatedUser();
 
     const cart = await prisma.cart.findUnique({
         where: {
-            userId: session.user.id,
+            userId: user.id,
         },
         include: {
             items: {

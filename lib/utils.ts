@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge"
 
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 
 export function cn(...inputs: ClassValue[]) {
@@ -15,7 +16,7 @@ export async function getAuthenticatedUser() {
   });
 
   if (!session?.user?.id) {
-    return null;
+    redirect("/login");
   }
 
   return session.user;
