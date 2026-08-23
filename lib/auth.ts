@@ -1,7 +1,7 @@
+
 // import { betterAuth } from "better-auth";
 // import { prismaAdapter } from "@better-auth/prisma-adapter";
-// import prisma from "./prisma";
-
+// import prisma from "@/lib/prisma";
 
 // export const auth = betterAuth({
 //     database: prismaAdapter(prisma, {
@@ -24,12 +24,16 @@
 //     },
 
 //     session: {
-//         expiresIn: 60 * 60 * 24 * 7, // 7 days
-//         updateAge: 60 * 60 * 24, // update session every 24 hours
+//         expiresIn: 60 * 60 * 24 * 7,
+//         updateAge: 60 * 60 * 24,
 //     },
 // });
+
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
+import { emailOTP } from "better-auth/plugins";
+import { dash } from "@better-auth/infra";
+import { sendOTPEmail } from "./emailjs";
 import prisma from "@/lib/prisma";
 
 export const auth = betterAuth({
@@ -39,6 +43,9 @@ export const auth = betterAuth({
 
     emailAndPassword: {
         enabled: true,
+
+        // User must verify email before login
+        requireEmailVerification: true,
     },
 
     user: {
@@ -51,4 +58,45 @@ export const auth = betterAuth({
             },
         },
     },
+
+    session: {
+        expiresIn: 60 * 60 * 24 * 7,
+        updateAge: 60 * 60 * 24,
+    },
+
+    plugins: [
+        dash({
+            apiKey: process.env.BETTER_AUTH_API_KEY,
+        }),
+
+        emailOTP({
+            overrideDefaultEmailVerification: true,
+
+            sendVerificationOnSignUp: true,
+
+            otpLength: 6,
+            expiresIn: 300,
+            allowedAttempts: 3,
+            async sendVerificationOTP({ email, otp, type }) {
+                console.log("========== OTP ==========");
+                console.log("EMAIL:", email);
+                console.log("TYPE:", type);
+                console.log("OTP:", otp);
+                console.log("=========================");
+
+                try {
+                    await sendOTPEmail({
+                        email,
+                        otp,
+                        type,
+                    });
+
+                    console.log("✅ OTP EMAIL SENT:", email);
+                } catch (error) {
+                    console.error("❌ OTP EMAIL FAILED:", error);
+                    throw error;
+                }
+            }
+        }),
+    ],
 });
