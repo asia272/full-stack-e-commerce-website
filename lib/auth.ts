@@ -46,6 +46,7 @@ export const auth = betterAuth({
 
         // User must verify email before login
         requireEmailVerification: true,
+        autoSignIn: false,
     },
 
     user: {

@@ -3,8 +3,9 @@
 import { authClient, signIn, signUp } from "@/lib/auth-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ForgotPassword from "./auth/ForgotPassword";
 
-type AuthMode = "login" | "signup";
+type AuthMode = "login" | "signup" | "forgot-password";
 
 export default function AuthForm() {
     const router = useRouter();
@@ -16,6 +17,9 @@ export default function AuthForm() {
     const [showOtp, setShowOtp] = useState(false);
     const [otp, setOtp] = useState("");
     const [verificationEmail, setVerificationEmail] = useState("");
+
+    const [signupPassword, setSignupPassword] = useState("");
+
 
     const isLogin = mode === "login";
 
@@ -53,6 +57,7 @@ export default function AuthForm() {
                 return;
             }
 
+
             const { error } = await signUp.email({
                 name,
                 email,
@@ -66,8 +71,12 @@ export default function AuthForm() {
                 return;
             }
 
+            setSignupPassword(password);
             setVerificationEmail(email);
+
+
             setShowOtp(true);
+
         } catch (error) {
             console.error(error);
 
@@ -95,28 +104,159 @@ export default function AuthForm() {
             return;
         }
 
+        if (!verificationEmail) {
+            setError("Verification email is missing.");
+            return;
+        }
+
+        if (!signupPassword) {
+            setError(
+                "Your signup session has expired. Please sign up again."
+            );
+            return;
+        }
+
         setLoading(true);
         setError("");
 
         try {
-            const { error } =
+            // =====================================================
+            // STEP 1 — VERIFY EMAIL VERIFICATION OTP
+            // =====================================================
+
+            const { error: verifyError } =
                 await authClient.emailOtp.verifyEmail({
                     email: verificationEmail,
                     otp,
                 });
 
-            if (error) {
-                setError(
-                    error.message ||
-                    "Invalid verification code."
+            if (verifyError) {
+                console.error(
+                    "❌ OTP VERIFICATION ERROR:",
+                    verifyError
                 );
+
+                setError(
+                    verifyError.message ||
+                    "Invalid or expired verification code."
+                );
+
                 return;
             }
 
-            router.push("/");
+            console.log("✅ EMAIL VERIFIED");
+
+
+            // =====================================================
+            // STEP 2 — AUTOMATIC LOGIN
+            // =====================================================
+            //
+            // The email is now verified.
+            //
+            // We now authenticate using the password that the
+            // user supplied during signup.
+            //
+            // Better Auth will create the session cookie here.
+            //
+
+            const { error: signInError } =
+                await signIn.email({
+                    email: verificationEmail,
+                    password: signupPassword,
+                });
+
+            if (signInError) {
+                console.error(
+                    "❌ AUTOMATIC LOGIN ERROR:",
+                    signInError
+                );
+
+                setError(
+                    signInError.message ||
+                    "Email verified, but automatic login failed."
+                );
+
+                return;
+            }
+
+            console.log(
+                "✅ AUTOMATIC LOGIN SUCCESSFUL"
+            );
+
+
+            // =====================================================
+            // STEP 3 — CONFIRM SESSION
+            // =====================================================
+
+            const {
+                data: session,
+                error: sessionError,
+            } = await authClient.getSession();
+
+            console.log(
+                "========== SESSION AFTER OTP =========="
+            );
+
+            console.log(
+                "SESSION:",
+                session
+            );
+
+            console.log(
+                "SESSION ERROR:",
+                sessionError
+            );
+
+            console.log(
+                "======================================="
+            );
+
+
+            // =====================================================
+            // STEP 4 — NEVER REDIRECT WITHOUT A SESSION
+            // =====================================================
+
+            if (!session?.user) {
+                console.error(
+                    "❌ SESSION WAS NOT CREATED"
+                );
+
+                setError(
+                    "Authentication failed. Please try logging in."
+                );
+
+                return;
+            }
+
+            console.log(
+                "✅ AUTHENTICATED USER:",
+                session.user.email
+            );
+
+
+            // =====================================================
+            // STEP 5 — CLEAR TEMPORARY DATA
+            // =====================================================
+
+            setSignupPassword("");
+            setVerificationEmail("");
+            setOtp("");
+            setShowOtp(false);
+            setError("");
+
+
+            // =====================================================
+            // STEP 6 — SAFE REDIRECT
+            // =====================================================
+
+            router.push("/")
             router.refresh();
+
         } catch (error) {
-            console.error(error);
+            console.error(
+                "❌ COMPLETE OTP FLOW ERROR:",
+                error
+            );
 
             setError(
                 "Something went wrong. Please try again."
@@ -278,12 +418,23 @@ export default function AuthForm() {
                     </div>
                 </div>
             ) : (
+
                 /* ================= LOGIN / SIGNUP UI ================= */
                 <>
-                    {/* ================= TITLE ================= */}
-                    <div className="mb-[55px] text-center">
-                        <h1
-                            className="
+                    {mode === "forgot-password" ? (
+                        <ForgotPassword
+                            onBackToLogin={() => {
+                                setMode("login");
+                                setError("");
+                            }}
+                        />
+                    ) : (
+                        <>
+                            {/* YOUR EXISTING LOGIN/SIGNUP FORM */}
+                            {/* ================= TITLE ================= */}
+                            <div className="mb-[55px] text-center">
+                                <h1
+                                    className="
                                 font-serif
                                 font-normal
                                 tracking-[-0.03em]
@@ -291,37 +442,37 @@ export default function AuthForm() {
                                 text-[52px]
                                 leading-[1]
                             "
-                        >
-                            {isLogin
-                                ? "Login"
-                                : "Sign Up"}
+                                >
+                                    {isLogin
+                                        ? "Login"
+                                        : "Sign Up"}
 
-                            <span className="ml-3">
-                                —
-                            </span>
-                        </h1>
-                    </div>
+                                    <span className="ml-3">
+                                        —
+                                    </span>
+                                </h1>
+                            </div>
 
-                    {/* ================= FORM ================= */}
-                    <form
-                        onSubmit={handleSubmit}
-                        className={
-                            isLogin
-                                ? "space-y-[35px]"
-                                : "space-y-[27px]"
-                        }
-                    >
-                        {/* NAME - SIGNUP ONLY */}
-                        {!isLogin && (
-                            <div>
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    placeholder="Name"
-                                    required={!isLogin}
-                                    autoComplete="name"
-                                    className="
+                            {/* ================= FORM ================= */}
+                            <form
+                                onSubmit={handleSubmit}
+                                className={
+                                    isLogin
+                                        ? "space-y-[35px]"
+                                        : "space-y-[27px]"
+                                }
+                            >
+                                {/* NAME - SIGNUP ONLY */}
+                                {!isLogin && (
+                                    <div>
+                                        <input
+                                            id="name"
+                                            name="name"
+                                            type="text"
+                                            placeholder="Name"
+                                            required={!isLogin}
+                                            autoComplete="name"
+                                            className="
                                         h-[61px]
                                         w-full
                                         border
@@ -336,20 +487,20 @@ export default function AuthForm() {
                                         placeholder:text-[#707070]
                                         focus:border-[#222222]
                                     "
-                                />
-                            </div>
-                        )}
+                                        />
+                                    </div>
+                                )}
 
-                        {/* EMAIL */}
-                        <div>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                placeholder="Email"
-                                required
-                                autoComplete="email"
-                                className="
+                                {/* EMAIL */}
+                                <div>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        placeholder="Email"
+                                        required
+                                        autoComplete="email"
+                                        className="
                                     h-[61px]
                                     w-full
                                     border
@@ -364,24 +515,24 @@ export default function AuthForm() {
                                     placeholder:text-[#707070]
                                     focus:border-[#222222]
                                 "
-                            />
-                        </div>
+                                    />
+                                </div>
 
-                        {/* PASSWORD */}
-                        <div>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                placeholder="Password"
-                                required
-                                minLength={8}
-                                autoComplete={
-                                    isLogin
-                                        ? "current-password"
-                                        : "new-password"
-                                }
-                                className="
+                                {/* PASSWORD */}
+                                <div>
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        placeholder="Password"
+                                        required
+                                        minLength={8}
+                                        autoComplete={
+                                            isLogin
+                                                ? "current-password"
+                                                : "new-password"
+                                        }
+                                        className="
                                     h-[61px]
                                     w-full
                                     border
@@ -396,26 +547,26 @@ export default function AuthForm() {
                                     placeholder:text-[#707070]
                                     focus:border-[#222222]
                                 "
-                            />
-                        </div>
+                                    />
+                                </div>
 
-                        {/* ERROR */}
-                        {error && (
-                            <p
-                                className="
+                                {/* ERROR */}
+                                {error && (
+                                    <p
+                                        className="
                                     font-[Outfit]
                                     text-sm
                                     text-red-500
                                 "
-                            >
-                                {error}
-                            </p>
-                        )}
+                                    >
+                                        {error}
+                                    </p>
+                                )}
 
-                        {/* ================= LOGIN LINKS ================= */}
-                        {isLogin && (
-                            <div
-                                className="
+                                {/* ================= LOGIN LINKS ================= */}
+                                {isLogin && (
+                                    <div
+                                        className="
                                     flex
                                     items-center
                                     justify-between
@@ -424,44 +575,48 @@ export default function AuthForm() {
                                     font-normal
                                     text-[#333333]
                                 "
-                            >
-                                <button
-                                    type="button"
-                                    className="
+                                    >
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setMode("forgot-password");
+                                                setError("");
+                                            }}
+                                            className="
+        cursor-pointer
+        bg-transparent
+        p-0
+    "
+                                        >
+                                            Forgot your password?
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={toggleMode}
+                                            className="
                                         cursor-pointer
                                         bg-transparent
                                         p-0
                                     "
-                                >
-                                    Forgot your password?
-                                </button>
+                                        >
+                                            Create account
+                                        </button>
+                                    </div>
+                                )}
 
-                                <button
-                                    type="button"
-                                    onClick={toggleMode}
-                                    className="
-                                        cursor-pointer
-                                        bg-transparent
-                                        p-0
-                                    "
+                                {/* ================= SUBMIT BUTTON ================= */}
+                                <div
+                                    className={
+                                        isLogin
+                                            ? "flex justify-center pt-[30px]"
+                                            : "flex justify-center pt-[18px]"
+                                    }
                                 >
-                                    Create account
-                                </button>
-                            </div>
-                        )}
-
-                        {/* ================= SUBMIT BUTTON ================= */}
-                        <div
-                            className={
-                                isLogin
-                                    ? "flex justify-center pt-[30px]"
-                                    : "flex justify-center pt-[18px]"
-                            }
-                        >
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="
                                     h-[59px]
                                     w-[200px]
                                     border
@@ -477,43 +632,46 @@ export default function AuthForm() {
                                     disabled:cursor-not-allowed
                                     disabled:opacity-50
                                 "
-                            >
-                                {loading
-                                    ? isLogin
-                                        ? "Signing in..."
-                                        : "Creating..."
-                                    : isLogin
-                                        ? "Sign in"
-                                        : "Create"}
-                            </button>
-                        </div>
-                    </form>
+                                    >
+                                        {loading
+                                            ? isLogin
+                                                ? "Signing in..."
+                                                : "Creating..."
+                                            : isLogin
+                                                ? "Sign in"
+                                                : "Create"}
+                                    </button>
+                                </div>
+                            </form>
 
-                    {/* ================= SIGNUP → LOGIN ================= */}
-                    {!isLogin && (
-                        <div
-                            className="
+                            {/* ================= SIGNUP → LOGIN ================= */}
+                            {!isLogin && (
+                                <div
+                                    className="
                                 mt-[35px]
                                 text-center
                                 font-[Outfit]
                                 text-[16px]
                                 text-[#555555]
                             "
-                        >
-                            Already have an account?{" "}
-                            <button
-                                type="button"
-                                onClick={toggleMode}
-                                className="
+                                >
+                                    Already have an account?{" "}
+                                    <button
+                                        type="button"
+                                        onClick={toggleMode}
+                                        className="
                                     font-medium
                                     text-black
                                     underline
                                 "
-                            >
-                                Login
-                            </button>
-                        </div>
+                                    >
+                                        Login
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     )}
+
                 </>
             )}
         </div>
