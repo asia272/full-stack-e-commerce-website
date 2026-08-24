@@ -4,6 +4,7 @@ import { authClient, signIn, signUp } from "@/lib/auth-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ForgotPassword from "./auth/ForgotPassword";
+import { checkEmailExists } from "@/app/actions/auth";
 
 type AuthMode = "login" | "signup" | "forgot-password";
 
@@ -38,6 +39,9 @@ export default function AuthForm() {
         const name = formData.get("name") as string;
 
         try {
+            // =====================================================
+            // LOGIN
+            // =====================================================
             if (isLogin) {
                 const { error } = await signIn.email({
                     email,
@@ -56,29 +60,86 @@ export default function AuthForm() {
                 router.refresh();
                 return;
             }
+            // =====================================================
+            // SIGNUP
+            // =====================================================
 
+            setShowOtp(false);
+            setOtp("");
+            setVerificationEmail("");
+            setSignupPassword("");
+
+            const normalizedEmail = email.trim().toLowerCase();
+
+            // =====================================================
+            // STEP 1 — CHECK EMAIL
+            // =====================================================
+
+            const { exists } = await checkEmailExists(
+                normalizedEmail
+            );
+
+            if (exists) {
+                console.log(
+                    "❌ EMAIL ALREADY EXISTS"
+                );
+
+                setError(
+                    "An account with this email already exists. Please login instead."
+                );
+
+                return;
+            }
+
+            // =====================================================
+            // STEP 2 — CREATE ACCOUNT
+            // =====================================================
 
             const { error } = await signUp.email({
                 name,
-                email,
+                email: normalizedEmail,
                 password,
             });
 
             if (error) {
-                setError(
-                    error.message || "Signup failed"
+                console.error(
+                    "❌ SIGNUP ERROR:",
+                    error
                 );
+
+                setShowOtp(false);
+
+                setError(
+                    error.message ||
+                    "Signup failed. Please try again."
+                );
+
                 return;
             }
 
+            // =====================================================
+            // STEP 3 — SIGNUP SUCCESS
+            // =====================================================
+
+            console.log(
+                "✅ SIGNUP SUCCESSFUL"
+            );
+
+            // Save temporary signup information
             setSignupPassword(password);
-            setVerificationEmail(email);
+            setVerificationEmail(normalizedEmail);
 
-
+            // ONLY HERE can OTP UI appear
             setShowOtp(true);
 
         } catch (error) {
-            console.error(error);
+            console.error(
+                "❌ SIGNUP ERROR:",
+                error
+            );
+
+            // Never show OTP when signup throws an exception.
+            setShowOtp(false);
 
             setError(
                 "Something went wrong. Please try again."
@@ -404,6 +465,8 @@ export default function AuthForm() {
                                     setShowOtp(false);
                                     setOtp("");
                                     setError("");
+                                    setVerificationEmail("");
+                                    setSignupPassword("");
                                 }}
                                 className="
                                     font-[Outfit]
@@ -419,7 +482,6 @@ export default function AuthForm() {
                 </div>
             ) : (
 
-                /* ================= LOGIN / SIGNUP UI ================= */
                 <>
                     {mode === "forgot-password" ? (
                         <ForgotPassword
@@ -430,7 +492,7 @@ export default function AuthForm() {
                         />
                     ) : (
                         <>
-                            {/* YOUR EXISTING LOGIN/SIGNUP FORM */}
+                            {/* LOGIN/SIGNUP FORM */}
                             {/* ================= TITLE ================= */}
                             <div className="mb-[55px] text-center">
                                 <h1
