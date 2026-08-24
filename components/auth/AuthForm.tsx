@@ -189,7 +189,8 @@ export default function AuthForm() {
                                 <Title title={isLogin
                                     ? "Login"
                                     : "Sign Up"}
-                                    highlight="" />
+                                    highlight=""
+                                    size="text-[42px]" />
                             </div>
 
                             {/* ================= FORM ================= */}
