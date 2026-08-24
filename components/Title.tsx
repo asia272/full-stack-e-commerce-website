@@ -3,6 +3,7 @@ interface TitleProps {
     highlight: string;
     align?: "start" | "center";
     className?: string;
+    size?: string,
     highlightWeight?: "normal" | "medium" | "semibold" | "bold";
 }
 
@@ -11,6 +12,7 @@ const Title = ({
     highlight,
     align = "center",
     className = "mb-[70px]",
+    size = "text-[30px]",
     highlightWeight = "normal",
 }: TitleProps) => {
     return (
@@ -18,7 +20,7 @@ const Title = ({
             className={`flex items-center gap-4 ${align === "center" ? "justify-center" : "justify-start"
                 } ${className}`}
         >
-            <h1 className="font-[Outfit] text-[30px] font-normal uppercase leading-none tracking-[0%] text-[#707070]">
+            <h1 className={`font-[Outfit] ${size} font-normal uppercase leading-none tracking-[0%] text-[#707070]`}>
                 {title}{" "}
                 <span
                     className={`text-[#171717] font-${highlightWeight}`}

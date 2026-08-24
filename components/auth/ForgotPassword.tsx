@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import Title from "../Title";
 
 type ForgotPasswordProps = {
     onBackToLogin: () => void;
@@ -132,7 +133,7 @@ export default function ForgotPassword({
 
             <div className="mb-[55px] text-center">
 
-                <h1
+                {/* <h1
                     className="
                         font-serif
                         text-[52px]
@@ -144,8 +145,8 @@ export default function ForgotPassword({
                 >
                     Forgot Password
                     <span className="ml-3">—</span>
-                </h1>
-
+                </h1> */}
+                <Title title="Forgot" highlight="password" className="mb-0" size="text-[42px]" />
                 <p
                     className="
                         mt-5
