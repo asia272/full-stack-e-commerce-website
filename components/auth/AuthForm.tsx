@@ -82,16 +82,10 @@ export default function AuthForm() {
                 await checkEmailExists(
                     normalizedEmail
                 );
-
             if (exists) {
-                console.log(
-                    "❌ EMAIL ALREADY EXISTS"
-                );
-
                 setError(
                     "An account with this email already exists. Please login instead."
                 );
-
                 return;
             }
 
@@ -106,13 +100,8 @@ export default function AuthForm() {
             });
 
             if (error) {
-                console.error(
-                    "❌ SIGNUP ERROR:",
-                    error
-                );
 
                 setShowOtp(false);
-
                 setError(
                     error.message ||
                     "Signup failed. Please try again."
@@ -125,10 +114,6 @@ export default function AuthForm() {
             // STEP 3 — SIGNUP SUCCESS
             // =====================================================
 
-            console.log(
-                "✅ SIGNUP SUCCESSFUL"
-            );
-
             // Save temporary signup information
             setSignupPassword(password);
             setVerificationEmail(
@@ -139,10 +124,6 @@ export default function AuthForm() {
             setShowOtp(true);
 
         } catch (error) {
-            console.error(
-                "❌ SIGNUP ERROR:",
-                error
-            );
 
             // Never show OTP when signup throws an exception.
             setShowOtp(false);

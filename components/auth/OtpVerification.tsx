@@ -24,19 +24,18 @@ export default function OtpVerification({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const { handleVerifyOtp } =
-        useOtpVerification({
-            otp,
-            verificationEmail,
-            signupPassword,
+    const { handleVerifyOtp } = useOtpVerification({
+        otp,
+        verificationEmail,
+        signupPassword,
 
-            setLoading,
-            setError,
-            setSignupPassword,
-            setVerificationEmail,
-            setOtp,
-            setShowOtp,
-        });
+        setLoading,
+        setError,
+        setSignupPassword,
+        setVerificationEmail,
+        setOtp,
+        setShowOtp,
+    });
 
     function handleBackToSignup() {
         setShowOtp(false);

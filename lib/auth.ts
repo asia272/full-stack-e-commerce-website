@@ -1,34 +1,4 @@
 
-// import { betterAuth } from "better-auth";
-// import { prismaAdapter } from "@better-auth/prisma-adapter";
-// import prisma from "@/lib/prisma";
-
-// export const auth = betterAuth({
-//     database: prismaAdapter(prisma, {
-//         provider: "postgresql",
-//     }),
-
-//     emailAndPassword: {
-//         enabled: true,
-//     },
-
-//     user: {
-//         additionalFields: {
-//             role: {
-//                 type: "string",
-//                 required: false,
-//                 defaultValue: "USER",
-//                 input: false,
-//             },
-//         },
-//     },
-
-//     session: {
-//         expiresIn: 60 * 60 * 24 * 7,
-//         updateAge: 60 * 60 * 24,
-//     },
-// });
-
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { emailOTP } from "better-auth/plugins";
@@ -79,11 +49,7 @@ export const auth = betterAuth({
             expiresIn: 300,
             allowedAttempts: 3,
             async sendVerificationOTP({ email, otp, type }) {
-                console.log("========== OTP ==========");
-                console.log("EMAIL:", email);
-                console.log("TYPE:", type);
-                console.log("OTP:", otp);
-                console.log("=========================");
+
 
                 try {
                     await sendOTPEmail({
@@ -92,9 +58,7 @@ export const auth = betterAuth({
                         type,
                     });
 
-                    console.log("✅ OTP EMAIL SENT:", email);
                 } catch (error) {
-                    console.error("❌ OTP EMAIL FAILED:", error);
                     throw error;
                 }
             }

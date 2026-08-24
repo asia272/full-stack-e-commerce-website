@@ -60,10 +60,6 @@ export function useOtpVerification({
                 });
 
             if (verifyError) {
-                console.error(
-                    "❌ OTP VERIFICATION ERROR:",
-                    verifyError
-                );
 
                 setError(
                     verifyError.message ||
@@ -73,7 +69,6 @@ export function useOtpVerification({
                 return;
             }
 
-            console.log("✅ EMAIL VERIFIED");
 
             // Automatic login
             const { error: signInError } =
@@ -83,10 +78,7 @@ export function useOtpVerification({
                 });
 
             if (signInError) {
-                console.error(
-                    "❌ AUTOMATIC LOGIN ERROR:",
-                    signInError
-                );
+
 
                 setError(
                     signInError.message ||
