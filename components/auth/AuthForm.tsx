@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ForgotPassword from "./ForgotPassword";
 import OtpVerification from "./OtpVerification";
-import { checkEmailExists } from "@/app/actions/auth";
+import { checkEmailExists, getLoggedInUserRole } from "@/app/actions/auth";
 import Title from "../Title";
 
 type AuthMode = "login" | "signup" | "forgot-password";
@@ -41,26 +41,33 @@ export default function AuthForm() {
             // =====================================================
             // LOGIN
             // =====================================================
-
             if (isLogin) {
-                const { error } = await signIn.email({
-                    email,
-                    password,
-                });
+                if (isLogin) {
+                    const { error } = await signIn.email({
+                        email,
+                        password,
+                    });
 
-                if (error) {
-                    setError(
-                        error.message ||
-                        "Invalid email or password"
-                    );
+                    if (error) {
+                        setError(
+                            error.message || "Invalid email or password"
+                        );
+
+                        return;
+                    }
+
+                    const role = await getLoggedInUserRole();
+
+                    if (role === "ADMIN") {
+                        router.push("/admin");
+                    } else {
+                        router.push("/");
+                    }
+
+                    router.refresh();
 
                     return;
                 }
-
-                router.push("/");
-                router.refresh();
-
-                return;
             }
 
             // =====================================================

@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth-guard";
+
 import { getAllOrders } from "@/app/actions/order";
 import OrderStatusSelect from "@/components/admin/OrderStatusSelect";
 import { OrderStatus } from "@/components/order/OrderCard";
@@ -23,7 +23,6 @@ const paymentStatusLabels = {
 };
 
 export default async function AdminOrdersPage() {
-    await requireAdmin();
 
     const result = await getAllOrders();
 

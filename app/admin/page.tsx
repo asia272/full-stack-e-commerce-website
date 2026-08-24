@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/auth-guard";
 
 export default async function AdminDashboard() {
+
     const user = await requireAdmin();
 
     return (

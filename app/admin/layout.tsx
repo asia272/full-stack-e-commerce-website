@@ -1,11 +1,15 @@
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { requireAdmin } from "@/lib/auth-guard";
 
-export default function AdminLayout({
+export default async function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+
+    await requireAdmin();
+
     return (
         <div className="min-h-screen bg-[#f8fafc] pt-[88px]">
             <AdminHeader />
