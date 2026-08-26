@@ -6,6 +6,10 @@ Users can browse products, search and filter products, add items to their cart, 
 
 The project also includes an **Admin Dashboard** for managing products and customer orders.
 
+## 📸 Project Preview
+
+![E-Commerce Website Preview](./public/e-commerce.png)
+
 ---
 
 ## 🚀 Features
