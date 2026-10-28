@@ -9,7 +9,7 @@ The project also includes an **Admin Dashboard** for managing products and custo
 ## 📸 Project Preview
 
 ![E-Commerce Website Preview](./public/e-commerce.png)
-
+[🎨 View Figma Design](https://www.figma.com/design/TBe3mud1W5e0a5b3WrCcfe/Forever?node-id=4-1021&t=srxx087znLOxl1hw-0)
 ---
 
 ## 🚀 Features
