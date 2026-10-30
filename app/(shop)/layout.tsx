@@ -8,7 +8,7 @@ export default async function ShopLayout({
 }: {
     children: React.ReactNode;
 }) {
-    await requireUser();
+    // await requireUser();
     return (
         <div className="min-h-screen flex flex-col">
             <CartProvider>
