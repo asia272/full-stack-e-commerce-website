@@ -1,4 +1,4 @@
-# 🛍️ Full-Stack E-Commerce Website
+# 🛍️ Full-Stack E-Commerce Website.
 
 A modern full-stack e-commerce website built with **Next.js, TypeScript, Prisma, PostgreSQL, Neon, Better Auth, Stripe, Cloudinary, and Tailwind CSS**.
 
